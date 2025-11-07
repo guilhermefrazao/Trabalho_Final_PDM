@@ -66,3 +66,61 @@ A primeira fase do projeto foi a engenharia de dados para criar a Camada Prata. 
       * `titulo_principal`: (string) Título do filme (para facilitar a leitura).
       * `nome_pessoa`: (string) Nome do ator ou diretor.
       * `categoria`: (string) Função da pessoa ('actor' ou 'director').
+
+
+# Executando código 
+**Documentação usada**
+https://airflow.apache.org/docs/apache-airflow/stable/howto/docker-compose/index.html
+
+**Criando ambiente airflow**
+
+*Windows* 
+```bash
+mkdir dags, logs, plugins, config
+```
+
+*Linux*
+```bash
+mkdir -p ./dags ./logs ./plugins ./config
+```
+
+**Adicionar Variavel de ambiente**
+
+*Windows* 
+```bash
+"AIRFLOW_UID=5000" | Out-File -Encoding UTF8 -FilePath .env
+```
+
+*Linux*
+```bash
+echo -e "AIRFLOW_UID=$(id -u)" > .env
+```
+
+**Inicializando arquivo de configurações**
+
+```bash
+docker compose run airflow-cli airflow config list
+```
+
+
+**Instanciando banco de dados e criando conta**
+
+```bash
+docker compose up airflow-init
+```
+
+- Criada a conta Airflow, com login: "airflow" e senha: "airflow"
+
+
+**Rodando Airflow**
+
+```bash
+docker compose up
+```
+
+
+**Reiniciando servidor ao subir alterações**
+
+```bash
+docker compose restart
+```

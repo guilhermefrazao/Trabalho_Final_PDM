@@ -1,0 +1,72 @@
+body {
+    font-family: "Segoe UI", sans-serif;
+    background-color: #0d1117; /* azul escuro quase preto */
+    margin: 0;
+    color: #fff;
+    display: flex;
+    flex-direction: column;
+    min-height: 100vh;
+}
+
+header {
+    background-color: #161b22;
+    color: #fff;
+    text-align: center;
+    padding: 25px 0;
+    font-size: 1.8rem;
+    font-weight: bold;
+}
+
+main {
+    flex: 1; /* ocupa o espaço restante verticalmente */
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    padding: 30px;
+}
+
+.grid {
+    display: flex;
+    grid-template-columns: repeat(auto-fill, minmax(220px, 1fr));
+    gap: 20px;
+    padding: 20px;
+}
+
+/* ===== Card de filme ===== */
+.card {
+    background: #1e3a8a;               /* azul escuro */
+    border-radius: 16px;
+    box-shadow: 0 4px 10px rgba(0, 0, 0, 0.4);
+    padding: 15px;
+    width: 230px;                      /* largura fixa */
+    height: 200px;                     /* altura aumentada */
+    display: flex;
+    flex-direction: column;
+    justify-content: center;           /* centraliza conteúdo verticalmente */
+    align-items: flex-start;
+    transition: transform 0.2s ease;
+}
+
+.card:hover {
+    transform: translateY(-5px);
+    background: #1d4ed8;               /* azul mais claro no hover */
+}
+
+.card h2 {
+    margin: 0 0 10px;
+    font-size: 1.3rem;
+    color: #fff;
+}
+
+.card p {
+    margin: 5px 0;
+    color: #cbd5e1;
+}
+
+footer {
+    background: #161b22;
+    color: #fff;
+    text-align: center;
+    padding: 10px;
+    font-size: 0.9rem;
+}
