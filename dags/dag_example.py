@@ -6,7 +6,10 @@ from datetime import datetime, timedelta
 from airflow import DAG
 from airflow.operators.bash import BashOperator
 from airflow.operators.python import PythonOperator
-from frontend.app import run
+import logging 
+
+log = logging.getLogger("meu_app")
+
 
 default_args = {
     "owner": "airflow",                 # dono do DAG
@@ -24,14 +27,15 @@ with DAG(
     description="Exemplo de DAG com Python e BashOperator",
     default_args=default_args,
     start_date=datetime(2025, 11, 7),        # primeira data de execução
-    schedule="*/1 * * * *",        # executa a cada 10 minutos
+    schedule="*/15 * * * *",        # executa a cada 10 minutos
     catchup=False,                           # não roda execuções antigas
     tags=["exemplo", "tutorial"],            # tags para filtro no UI
 ) as dag:
 
     
     def processar_dados():
-        print("Processando dados...")
+        log.info("Processando dados...")
+
 
     # Tarefa 1: apenas imprime algo no console
     tarefa_inicial = BashOperator(

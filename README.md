@@ -72,6 +72,12 @@ A primeira fase do projeto foi a engenharia de dados para criar a Camada Prata. 
 **Documentação usada**
 https://airflow.apache.org/docs/apache-airflow/stable/howto/docker-compose/index.html
 
+**Caso tenha algum erro, utilize o comando para reiniciar o ambiente docker**
+
+```bash
+docker compose down --volumes --rmi all
+```
+
 **Criando ambiente airflow**
 
 *Windows* 
