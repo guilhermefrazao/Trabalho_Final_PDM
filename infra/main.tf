@@ -1,3 +1,9 @@
+import {
+  to = google_service_account.Pdm-2025-creditos
+
+  id = "projects/pdm-2025-creditos/serviceAccounts/pdm-2025-creditos@pdm-2025-creditos.iam.gserviceaccount.com"
+}
+
 terraform {
   required_version = ">= 1.6.0"
 
@@ -27,18 +33,18 @@ resource "google_service_account" "Pdm-2025-creditos" {
   display_name = "Service Account para o Cloud Run FastAPI"
 }
 
-resource "time_sleep" "wait_1_minute" {
-  create_duration = "60s"
+resource "time_sleep" "wait_seconds" {
+  create_duration = "30s"
 
   depends_on = [google_project_service.gcp_services]
 }
 
 resource "google_artifact_registry_repository" "repo" {
-  repository_id = "fastapi-repo-auto"
+  repository_id = "fastapi-repo-triggers"
   format        = "DOCKER"
   location      = "us-central1"
 
-  depends_on = [time_sleep.wait_1_minute]
+  depends_on = [time_sleep.wait_seconds]
 }
 
 
