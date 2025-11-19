@@ -28,7 +28,7 @@ async def wait_for_dag_result(dag_id, dag_run_id, headers):
 
 @app.get("/")
 async def home():
-    return {"status": "FastAPI conectado"}
+    return {"status": "✨💖 (⁠｡⁠♥⁠‿⁠♥⁠｡⁠) Eu amo meu moh!!! ❤️💕🌹 Obrigado por esperar 🥰🐻"}
 
 @app.post("/executar_dag")
 async def chat(question: str):

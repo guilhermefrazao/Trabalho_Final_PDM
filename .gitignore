@@ -1,3 +1,9 @@
 .env
 /config
 /logs
+.github/workflows/deploy.yml
+infra/.terraform.lock.hcl
+infra/.terraform/providers/registry.terraform.io/hashicorp/google/5.45.2/windows_amd64/LICENSE.txt
+infra/.terraform/providers/registry.terraform.io/hashicorp/google/5.45.2/windows_amd64/terraform-provider-google_v5.45.2_x5.exe
+infra/.terraform/providers/registry.terraform.io/hashicorp/google/6.8.0/windows_amd64/LICENSE.txt
+infra/.terraform/providers/registry.terraform.io/hashicorp/google/6.8.0/windows_amd64/terraform-provider-google_v6.8.0_x5.exe
