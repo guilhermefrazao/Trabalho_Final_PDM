@@ -14,16 +14,12 @@ provider "google" {
   region  = var.region
 }
 
-resource "google_project_service" "run" {
-  service = "run.googleapis.com"
-}
+resource "google_project_service" "gcp_services" {
+  for_each = toset(var.gcp_service_list)
 
-resource "google_project_service" "artifact_registry" {
-  service = "artifactregistry.googleapis.com"
-}
-
-resource "google_project_service" "cloudbuild" {
-  service = "cloudbuild.googleapis.com"
+  project            = var.project
+  service            = each.key
+  disable_on_destroy = false
 }
 
 resource "google_service_account" "Pdm-2025-creditos" {
@@ -31,16 +27,25 @@ resource "google_service_account" "Pdm-2025-creditos" {
   display_name = "Service Account para o Cloud Run FastAPI"
 }
 
+resource "time_sleep" "wait_1_minute" {
+  create_duration = "60s"
+
+  depends_on = [google_project_service.gcp_services]
+}
+
 resource "google_artifact_registry_repository" "repo" {
   repository_id = "fastapi-repo-auto"
   format        = "DOCKER"
   location      = "us-central1"
+
+  depends_on = [time_sleep.wait_1_minute]
 }
 
 
 resource "google_cloud_run_v2_service" "fastapi_service" {
-  name     = "fastapi-service"
-  location = "us-central1"
+  name       = "fastapi-service"
+  location   = "us-central1"
+  depends_on = [google_project_service.gcp_services]
 
   template {
     service_account = google_service_account.Pdm-2025-creditos.email
@@ -71,6 +76,12 @@ resource "google_project_iam_member" "sa_artifact_registry_access" {
   member  = "serviceAccount:${google_service_account.Pdm-2025-creditos.email}"
 }
 
+resource "google_project_iam_member" "cloudbuild_registry" {
+  project = var.project
+  role    = "roles/artifactregistry.writer"
+  member  = "serviceAccount:${google_service_account.Pdm-2025-creditos.email}"
+}
+
 resource "google_project_iam_member" "cloudbuild_run_admin" {
   project = var.project
   role    = "roles/run.admin"
@@ -80,12 +91,6 @@ resource "google_project_iam_member" "cloudbuild_run_admin" {
 resource "google_project_iam_member" "cloudbuild_sa_user" {
   project = var.project
   role    = "roles/iam.serviceAccountUser"
-  member  = "serviceAccount:${google_service_account.Pdm-2025-creditos.email}"
-}
-
-resource "google_project_iam_member" "cloudbuild_registry" {
-  project = var.project
-  role    = "roles/artifactregistry.writer"
   member  = "serviceAccount:${google_service_account.Pdm-2025-creditos.email}"
 }
 
