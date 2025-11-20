@@ -1,0 +1,21 @@
+version: '3.8'
+
+services:
+  # Nosso banco de dados da Camada Prata
+  postgres_db:
+    image: postgres:15-alpine # Usamos uma imagem leve do Postgres
+    container_name: silver_db_postgres
+    environment:
+      POSTGRES_USER: 'user_ia'
+      POSTGRES_PASSWORD: 'password_ia'
+      POSTGRES_DB: 'filmes_db'
+    ports:
+      - "5432:5432" # Expõe o banco para o seu 'localhost' na porta 5432
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
+    restart: always
+
+volumes:
+  postgres_data:
+    # Este volume garante que os dados do banco não se perdem
+    # mesmo que o 'container' seja desligado ou reiniciado.
