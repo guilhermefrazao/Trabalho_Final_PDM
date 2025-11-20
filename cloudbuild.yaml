@@ -6,17 +6,17 @@ steps:
   - name: 'gcr.io/cloud-builders/docker'
     args: ['push', '$_REGION-docker.pkg.dev/$PROJECT_ID/$_REPO_NAME/fastapi-app:$COMMIT_SHA']
 
-  - name: 'hashicorp/terraform:1.9.5' 
-    dir: 'infra'
-    entrypoint: 'sh'
+  - name: 'gcr.io/google.com/cloudsdktool/cloud-sdk'
+    entrypoint: gcloud
     args:
-      - '-c'
-      - |
-        terraform init
-
-        terraform apply -auto-approve \
-          -var="project=$PROJECT_ID" \
-          -var="image_tag=$COMMIT_SHA"
+      - 'run'
+      - 'deploy'
+      - '$SERVICE_NAME'
+      - '--image'
+      - '$_REGION-docker.pkg.dev/$PROJECT_ID/$_REPO_NAME/fastapi-app:$COMMIT_SHA'
+      - '--region'
+      - '$_REGION'
+      - '--quiet'
 
 options:
   logging: CLOUD_LOGGING_ONLY
