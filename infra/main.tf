@@ -56,7 +56,8 @@ resource "google_cloud_run_v2_service" "airflow-test" {
     service_account = google_service_account.Pdm-2025-creditos.email
 
     containers {
-      image = "us-central1-docker.pkg.dev/${var.project}/${google_artifact_registry_repository.repo.name}/fastapi-app:${var.image_tag}"
+      #image = "us-central1-docker.pkg.dev/${var.project}/${google_artifact_registry_repository.repo.name}/fastapi-app:${var.image_tag}"
+      image = "us-docker.pkg.dev/cloudrun/container/hello"
     }
   }
 
