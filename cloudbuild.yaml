@@ -1,6 +1,7 @@
 steps:
   # Passo 1: Construir a imagem Docker
   - name: 'gcr.io/cloud-builders/docker'
+    dir: "frontend"
     args: ['build', '-t', '$_REGION-docker.pkg.dev/$PROJECT_ID/$_REPO_NAME/fastapi-app:$COMMIT_SHA', '.']
 
   # Passo 2: Enviar a imagem para o Artifact Registry

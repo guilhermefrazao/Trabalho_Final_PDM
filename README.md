@@ -46,18 +46,6 @@ O pipeline segue a arquitetura Medallion para garantir a qualidade e a rastreabi
 * `docker-compose.yml`: Arquivo de configuração para iniciar o container do banco de dados PostgreSQL.
 * `requirements.txt`: Lista de todas as dependências Python do projeto.
 
----
-
-## 📋 Pré-requisitos
-
-Antes de começar, garanta que você tem as seguintes ferramentas instaladas:
-
-1.  [Python 3.9+](https://www.python.org/downloads/)
-2.  [Docker Desktop](https://www.docker.com/products/docker-desktop/) (Certifique-se de que ele esteja em execução!)
-3.  [Git](https://git-scm.com/downloads)
-
----
-
 ## 🚀 Como Executar o Pipeline (Passo a Passo)
 
 Siga estes passos na ordem correta para executar o projeto do zero.
@@ -134,40 +122,9 @@ Com o Docker Desktop aberto e em execução, inicie o container do PostgreSQL:
 ```bash
 docker-compose up -d
 ```
+
 *O banco de dados agora está rodando em segundo plano.*
 
-### 5. Executar o Pipeline de Coleta (Bronze)
-
-```bash
-# Passo 1: Coletar os links
-python 001_coletor_de_links.py
-
-# Passo 2: Extrair os dados brutos (ISSO VAI DEMORAR!)
-python 002_extrator_infobox.py
-```
-*Ao final, você terá a pasta `/bronze_data` cheia de JSONs.*
-
-### 6. Executar o Pipeline ETL (Prata)
-
-Este script transforma os JSONs brutos no banco de dados limpo:
-
-```bash
-# Passo 3: Limpar, normalizar e carregar no PostgreSQL
-python 003_bronze_para_prata.py
-```
-*Neste ponto, seu banco de dados no Docker está populado e pronto.*
-
-### 7. Exportar os Entregáveis (CSV)
-
-Este é o script final para gerar os arquivos para a equipe de IA:
-
-```bash
-# Passo 4: Exportar as tabelas Prata para arquivos CSV
-python 004_prata_csv.py
-```
-*Parabéns! Verifique a pasta `/silver_exports`. Seus 5 arquivos CSV (`movies.csv`, `people.csv`, etc.) estão prontos para serem enviados ao Google Drive.*
-
----
 
 ## 📊 Esquema da Camada Prata (Entregável)
 
