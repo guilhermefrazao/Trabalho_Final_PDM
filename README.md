@@ -68,38 +68,64 @@ Siga estes passos na ordem correta para executar o projeto do zero.
 git clone [https://github.com/seu-usuario/seu-repositorio.git](https://github.com/seu-usuario/seu-repositorio.git)
 cd seu-repositorio
 ```
+### 2. Executando código: 
 
-### 2. Criar o `requirements.txt`
+**Documentação usada**
+https://airflow.apache.org/docs/apache-airflow/stable/howto/docker-compose/index.html
 
-Crie um arquivo chamado `requirements.txt` e cole o seguinte conteúdo (são as bibliotecas que usamos):
+**Criando ambiente airflow**
 
-```txt
-requests
-beautifulsoup4
-pandas
-sqlalchemy
-psycopg2-binary
-lxml
-langchain
-langchain_google_genai
-langchain_community
+*Windows* 
+```bash
+mkdir dags, logs, plugins, config
 ```
 
-### 3. Instalar as Dependências
+*Linux*
+```bash
+mkdir -p ./dags ./logs ./plugins ./config
+```
 
-Crie um ambiente virtual e instale as bibliotecas:
+**Adicionar Variavel de ambiente**
+
+*Windows* 
+```bash
+"AIRFLOW_UID=5000" | Out-File -Encoding UTF8 -FilePath .env
+```
+
+*Linux*
+```bash
+echo -e "AIRFLOW_UID=$(id -u)" > .env
+```
+
+**Inicializando arquivo de configurações**
 
 ```bash
-# Crie o ambiente virtual (recomendado)
-python -m venv venv
-
-# Ative o ambiente (Windows PowerShell)
-.\venv\Scripts\Activate.ps1
-# (Use 'source venv/bin/activate' no Mac/Linux)
-
-# Instale os pacotes
-pip install -r requirements.txt
+docker compose run airflow-cli airflow config list
 ```
+
+
+**Instanciando banco de dados e criando conta**
+
+```bash
+docker compose up airflow-init
+```
+
+- Criada a conta Airflow, com login: "airflow" e senha: "airflow"
+
+
+**Rodando Airflow**
+
+```bash
+docker compose up
+```
+
+
+**Reiniciando servidor ao subir alterações**
+
+```bash
+docker compose restart
+```
+
 
 ### 4. Iniciar o Banco de Dados (Camada Prata)
 
