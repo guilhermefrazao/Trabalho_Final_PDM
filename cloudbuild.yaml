@@ -1,12 +1,22 @@
 steps:
-  # Passo 1: Construir a imagem Docker
   - name: 'gcr.io/cloud-builders/docker'
     dir: "frontend"
     args: ['build', '-t', '$_REGION-docker.pkg.dev/$PROJECT_ID/$_REPO_NAME/fastapi-app:$COMMIT_SHA', '.']
 
-  # Passo 2: Enviar a imagem para o Artifact Registry
   - name: 'gcr.io/cloud-builders/docker'
     args: ['push', '$_REGION-docker.pkg.dev/$PROJECT_ID/$_REPO_NAME/fastapi-app:$COMMIT_SHA']
+
+  - name: 'hashicorp/terraform:light'
+    dir: 'infra'
+    entrypoint: 'sh'
+    args:
+      - '-c'
+      - |
+        terraform init
+
+        terraform apply -auto-approve \
+          -var="project=$PROJECT_ID" \
+          -var="image_tag=$COMMIT_SHA"
 
 options:
   logging: CLOUD_LOGGING_ONLY

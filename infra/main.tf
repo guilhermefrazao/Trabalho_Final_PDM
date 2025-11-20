@@ -48,34 +48,6 @@ resource "google_artifact_registry_repository" "repo" {
 }
 
 
-resource "google_cloud_run_v2_service" "fastapi_service" {
-  name       = "fastapi-service"
-  location   = "us-central1"
-  depends_on = [google_project_service.gcp_services]
-
-  template {
-    service_account = google_service_account.Pdm-2025-creditos.email
-
-    containers {
-      image = "us-central1-docker.pkg.dev/${var.project}/fastapi-repo/fastapi-app:v4"
-    }
-  }
-
-  traffic {
-    type    = "TRAFFIC_TARGET_ALLOCATION_TYPE_LATEST"
-    percent = 100
-  }
-}
-
-resource "google_cloud_run_service_iam_member" "public_invoker" {
-  location = google_cloud_run_v2_service.fastapi_service.location
-  project  = var.project
-  service  = google_cloud_run_v2_service.fastapi_service.name
-
-  role   = "roles/run.invoker"
-  member = "allUsers"
-}
-
 resource "google_project_iam_member" "sa_artifact_registry_access" {
   project = var.project
   role    = "roles/artifactregistry.reader"
@@ -131,4 +103,36 @@ resource "google_cloudbuild_trigger" "build_trigger" {
     google_project_iam_member.cloudbuild_sa_user
   ]
 }
+
+
+
+resource "google_cloud_run_v2_service" "fastapi_service" {
+  name       = "fastapi-service"
+  location   = "us-central1"
+  depends_on = [google_project_service.gcp_services]
+
+  template {
+    service_account = google_service_account.Pdm-2025-creditos.email
+
+    containers {
+      image = "us-central1-docker.pkg.dev/${var.project}/${google_artifact_registry_repository.repo.name}/fastapi-app:${var.image_tag}"
+    }
+  }
+
+  traffic {
+    type    = "TRAFFIC_TARGET_ALLOCATION_TYPE_LATEST"
+    percent = 100
+  }
+}
+
+resource "google_cloud_run_service_iam_member" "public_invoker" {
+  location = google_cloud_run_v2_service.fastapi_service.location
+  project  = var.project
+  service  = google_cloud_run_v2_service.fastapi_service.name
+
+  role   = "roles/run.invoker"
+  member = "allUsers"
+}
+
+
 
