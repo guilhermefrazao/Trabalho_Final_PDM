@@ -6,7 +6,7 @@ steps:
   - name: 'gcr.io/cloud-builders/docker'
     args: ['push', '$_REGION-docker.pkg.dev/$PROJECT_ID/$_REPO_NAME/fastapi-app:$COMMIT_SHA']
 
-  - name: 'hashicorp/terraform:light'
+  - name: 'hashicorp/terraform:1.9.5' 
     dir: 'infra'
     entrypoint: 'sh'
     args:

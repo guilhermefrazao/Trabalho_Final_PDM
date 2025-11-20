@@ -20,5 +20,5 @@ variable "gcp_service_list" {
 
 variable "image_tag" {
   description = "A tag da imagem que foi feita o push recentemente"
-  tag = string
+  type         = string
 }
