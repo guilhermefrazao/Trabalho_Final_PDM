@@ -100,6 +100,12 @@ resource "google_project_iam_member" "cloudbuild_sa_user" {
   member  = "serviceAccount:${google_service_account.Pdm-2025-creditos.email}"
 }
 
+resource "google_project_iam_member" "cloudbuild_logs_writer" {
+  project = var.project
+  role    = "roles/logging.logWriter"
+  member  = "serviceAccount:${google_service_account.Pdm-2025-creditos.email}"
+}
+
 resource "google_cloudbuild_trigger" "build_trigger" {
   name = "trigger-fastapi-deploy"
 
