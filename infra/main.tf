@@ -40,15 +40,15 @@ resource "time_sleep" "wait_seconds" {
 }
 
 resource "google_artifact_registry_repository" "repo" {
-  repository_id = "fastapi-repo-airflow"
+  repository_id = "repo-airflow"
   format        = "DOCKER"
   location      = "us-central1"
 
   depends_on = [time_sleep.wait_seconds]
 }
 
-resource "google_cloud_run_v2_service" "fastapi_test" {
-  name       = "fastapi-test"
+resource "google_cloud_run_v2_service" "airflow-test" {
+  name       = "airflow-test"
   location   = "us-central1"
   depends_on = [google_project_service.gcp_services]
 
@@ -67,9 +67,9 @@ resource "google_cloud_run_v2_service" "fastapi_test" {
 }
 
 resource "google_cloud_run_service_iam_member" "public_invoker" {
-  location = google_cloud_run_v2_service.fastapi_test.location
+  location = google_cloud_run_v2_service.airflow-test.location
   project  = var.project
-  service  = google_cloud_run_v2_service.fastapi_test.name
+  service  = google_cloud_run_v2_service.airflow-test.name
 
   role   = "roles/run.invoker"
   member = "allUsers"
@@ -108,7 +108,7 @@ resource "google_project_iam_member" "cloudbuild_logs_writer" {
 }
 
 resource "google_cloudbuild_trigger" "build_trigger" {
-  name = "trigger-fastapi-deploy"
+  name = "trigger-airflow-deploy"
 
   service_account = google_service_account.Pdm-2025-creditos.id
 
@@ -123,7 +123,7 @@ resource "google_cloudbuild_trigger" "build_trigger" {
 
   substitutions = {
     _REGION       = var.region
-    _SERVICE_NAME = google_cloud_run_v2_service.fastapi_test.name
+    _SERVICE_NAME = google_cloud_run_v2_service.airflow-test.name
     _REPO_NAME    = google_artifact_registry_repository.repo.name
   }
 

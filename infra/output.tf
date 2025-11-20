@@ -1,3 +1,3 @@
 output "cloud_run_url" {
-  value = google_cloud_run_v2_service.fastapi_test.uri
+  value = google_cloud_run_v2_service.airflow-test.uri
 }
