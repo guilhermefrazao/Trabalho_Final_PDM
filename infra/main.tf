@@ -4,21 +4,6 @@ import {
   id = "projects/pdm-2025-creditos/serviceAccounts/pdm-2025-creditos@pdm-2025-creditos.iam.gserviceaccount.com"
 }
 
-terraform {
-  required_version = ">= 1.6.0"
-
-  required_providers {
-    google = {
-      source  = "hashicorp/google"
-      version = "~> 5.0"
-    }
-  }
-}
-
-provider "google" {
-  project = var.project
-  region  = var.region
-}
 
 resource "google_project_service" "gcp_services" {
   for_each = toset(var.gcp_service_list)
@@ -46,37 +31,6 @@ resource "google_artifact_registry_repository" "repo" {
 
   depends_on = [time_sleep.wait_seconds]
 }
-
-resource "google_cloud_run_v2_service" "airflow-test" {
-  name       = "airflow-test"
-  location   = "us-central1"
-  depends_on = [google_project_service.gcp_services]
-
-  template {
-    service_account = google_service_account.Pdm-2025-creditos.email
-
-    containers {
-      #image = "us-central1-docker.pkg.dev/${var.project}/${google_artifact_registry_repository.repo.name}/fastapi-app:${var.image_tag}"
-      image = "us-docker.pkg.dev/cloudrun/container/hello"
-    }
-  }
-
-  traffic {
-    type    = "TRAFFIC_TARGET_ALLOCATION_TYPE_LATEST"
-    percent = 100
-  }
-}
-
-resource "google_cloud_run_service_iam_member" "public_invoker" {
-  location = google_cloud_run_v2_service.airflow-test.location
-  project  = var.project
-  service  = google_cloud_run_v2_service.airflow-test.name
-
-  role   = "roles/run.invoker"
-  member = "allUsers"
-}
-
-
 
 resource "google_project_iam_member" "sa_artifact_registry_access" {
   project = var.project
@@ -123,9 +77,8 @@ resource "google_cloudbuild_trigger" "build_trigger" {
   filename = "cloudbuild.yaml"
 
   substitutions = {
-    _REGION       = var.region
-    _SERVICE_NAME = google_cloud_run_v2_service.airflow-test.name
-    _REPO_NAME    = google_artifact_registry_repository.repo.name
+    _REGION    = var.region
+    _REPO_NAME = google_artifact_registry_repository.repo.name
   }
 
   depends_on = [
@@ -134,4 +87,28 @@ resource "google_cloudbuild_trigger" "build_trigger" {
   ]
 }
 
+resource "google_container_cluster" "primary" {
+  name     = "fastapi-airflow-cluster"
+  location = "us-central1-a"
+
+  remove_default_node_pool = true
+  initial_node_count       = 1
+}
+
+resource "google_container_node_pool" "primary_nodes" {
+  name       = "airflow-node"
+  location   = google_container_cluster.primary.location
+  cluster    = google_container_cluster.primary.name
+  node_count = 2
+
+  node_config {
+    machine_type = "e2-standard-2"
+    disk_size_gb = 50
+    disk_type    = "pd-standard"
+
+    oauth_scopes = [
+      "https://www.googleapis.com/auth/cloud-platform"
+    ]
+  }
+}
 

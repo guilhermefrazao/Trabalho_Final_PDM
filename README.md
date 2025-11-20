@@ -126,6 +126,23 @@ docker-compose up -d
 *O banco de dados agora está rodando em segundo plano.*
 
 
+
+### 5. Utilizando terraform para subir a arquitetura para produção:
+
+```bash
+terraform init --upgrade
+```
+
+```bash
+terraform apply -target=google_artifact_registry_repository.repo
+```
+
+
+```bash
+terraform apply -var="image_tag=tag_da_imagem_docker_artifact_repository"
+```
+
+
 ## 📊 Esquema da Camada Prata (Entregável)
 
 O pipeline gera as seguintes tabelas normalizadas, que são exportadas para CSV:

@@ -6,17 +6,5 @@ steps:
   - name: 'gcr.io/cloud-builders/docker'
     args: ['push', '$_REGION-docker.pkg.dev/$PROJECT_ID/$_REPO_NAME/fastapi-app:$COMMIT_SHA']
 
-  - name: 'gcr.io/google.com/cloudsdktool/cloud-sdk'
-    entrypoint: gcloud
-    args:
-      - 'run'
-      - 'deploy'
-      - '$_SERVICE_NAME'
-      - '--image'
-      - '$_REGION-docker.pkg.dev/$PROJECT_ID/$_REPO_NAME/fastapi-app:$COMMIT_SHA'
-      - '--region'
-      - '$_REGION'
-      - '--quiet'
-
 options:
   logging: CLOUD_LOGGING_ONLY

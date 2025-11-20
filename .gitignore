@@ -10,3 +10,4 @@ infra/.terraform/providers/registry.terraform.io/hashicorp/google/6.8.0/windows_
 infra/terraform.tfstate
 infra/terraform.tfstate.backup
 infra/.terraform.tfstate.lock.info
+/infra/.terraform
