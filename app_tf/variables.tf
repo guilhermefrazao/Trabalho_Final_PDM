@@ -18,9 +18,14 @@ variable "gcp_service_list" {
   ]
 }
 
-variable "image_tag" {
+variable "image_tag_fastapi" {
   description = "A tag da imagem que foi feita o push recentemente"
   type        = string
 }
 
-project = "pdm-2025-creditos"
+variable "image_tag_mlflow" {
+  description = "A tag da imagem que foi feita o push recentemente"
+  type        = string
+}
+
+variable "webserverSecretKey" {}

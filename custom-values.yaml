@@ -1,63 +1,31 @@
-# custom-values.yaml
+defaultAirflowTag: "2.10.3"
 
-executor: "KubernetesExecutor"
-
+executor: KubernetesExecutor
 postgresql:
   enabled: true
   image:
-    repository: bitnami/postgresql
-    tag: "15"
+    repository: postgres
+    tag: 13-alpine  
     pullPolicy: IfNotPresent
-  primary:
-    resources:
-      requests:
-        cpu: 100m
-        memory: 256Mi
-
-webserver:
-  enabled: true
-  replicas: 1
-  service:
-    type: LoadBalancer 
-  resources:
-    requests:
-      cpu: 200m 
-      memory: 512Mi
-
-scheduler:
-  replicas: 1
-  resources:
-    requests:
-      cpu: 200m
-      memory: 512Mi
-
-workers:
-  resources:
-    requests:
-      cpu: 200m
-      memory: 512Mi
-
-triggerer:
-  enabled: false
-dagProcessor:
-  enabled: false
-
-statsd:
-  resources:
-    requests:
-      cpu: 50m
-      memory: 64Mi
-
 dags:
   gitSync:
     enabled: true
     repo: "https://github.com/guilhermefrazao/Trabalho_Final_PDM.git"
     branch: "feat/infra"
-    rev: "HEAD"
-    depth: 1
-    subPath: "dags" 
+    subPath: "dags"
 
-logs:
-  persistence:
+apiServer:
+  enabled: false
+
+webserver:
+  enabled: true         
+  defaultUser:       
     enabled: true
-    size: 10Gi
+    role: Admin
+    username: admin
+    password: admin
+    firstName: Admin
+    lastName: User
+    email: admin@example.com
+  service:
+    type: LoadBalancer

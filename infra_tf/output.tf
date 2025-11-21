@@ -19,3 +19,8 @@ output "cluster_ca_certificate" {
 output "location" {
   value = google_container_cluster.primary.location
 }
+
+output "repo_name" {
+  description = "Repositóry name"
+  value       = google_artifact_registry_repository.repo.name
+}

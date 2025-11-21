@@ -4,11 +4,13 @@ from datetime import datetime, timedelta
 import random
 import pytz
 import time
+import mlflow.pyfunc
+import os
 
 app = FastAPI()
 
 AIRFLOW_API = "http://airflow-webserver.airflow.svc.cluster.local:8080/api/v2"
-DAG_ID = "exemplo_pipeline_completo"
+DAG_ID = "executar_treinamento_k8s"
 
 async def wait_for_dag_result(dag_id, dag_run_id, headers):
     while True:
@@ -26,12 +28,25 @@ async def wait_for_dag_result(dag_id, dag_run_id, headers):
         time.sleep(5)
 
 
+MLFLOW_TRACKING_URI = os.getenv("MLFLOW_TRACKING_URI", "http://mlflow-service.default.svc.cluster.local:5000")
+
+@app.lifespan("startup")
+def load_model():
+    global model
+    mlflow.set_tracking_uri(MLFLOW_TRACKING_URI)
+    
+    print("Carregando modelo do MLflow...")
+    model = mlflow.pyfunc.load_model("models:/modelo_linear_teste/Production")
+    print("Modelo carregado com sucesso!")
+
+
+
 @app.get("/")
 async def home():
     return {"status": "FastAPI testando o novo CI com o push no github"}
 
-@app.post("/executar_dag")
-async def chat(question: str):
+@app.post("/retrain_dag")
+async def chat():
     """
     Recebe a pergunta, dispara um DAG no Airflow e retorna a resposta.
     """
@@ -92,7 +107,14 @@ async def chat(question: str):
     return {
         "mensagem": f"DAG '{DAG_ID}' executando...",    
         "dados": {
-            "question": question,
             "response": data_response
         }
     }
+
+app.post("/chat")
+def predict_question(question: str):
+    if not model:
+        return {"error": "Modelo ainda não carregado"}
+    
+    prediction = model.predict(question)
+    return {"prediction": prediction.tolist()}

@@ -109,8 +109,8 @@ resource "google_container_node_pool" "primary_nodes" {
   node_count = 2
 
   node_config {
-    machine_type = "e2-standard-2"
-    disk_size_gb = 50
+    machine_type = "e2-standard-4"
+    disk_size_gb = 100
     disk_type    = "pd-standard"
 
     oauth_scopes = [
@@ -119,4 +119,16 @@ resource "google_container_node_pool" "primary_nodes" {
   }
 }
 
+resource "null_resource" "configure_kubectl" {
 
+  triggers = {
+    cluster_endpoint = google_container_cluster.primary.endpoint
+  }
+
+  provisioner "local-exec" {
+    command = "gcloud container clusters get-credentials ${google_container_cluster.primary.name} --zone ${google_container_cluster.primary.location} --project ${var.project}"
+
+  }
+
+  depends_on = [google_container_cluster.primary]
+}
