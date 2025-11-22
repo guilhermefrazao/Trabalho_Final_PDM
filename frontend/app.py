@@ -13,7 +13,7 @@ app = FastAPI()
 AIRFLOW_API = "http://airflow-webserver.airflow.svc.cluster.local:8080/api/v1"
 DAG_ID = "executar_treinamento_k8s"
 
-async def wait_for_dag_result(dag_id, dag_run_id, headers):
+async def wait_for_dag_result(dag_id, dag_run_id):
     while True:
         resp = requests.get(
             f"{AIRFLOW_API}/dags/{dag_id}/dagRuns/{dag_run_id}",
