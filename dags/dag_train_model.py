@@ -6,7 +6,7 @@ import logging
 from datetime import datetime
 
 
-MLFLOW_URI = "http://mlflow-service.default.svc.cluster.local:5000"
+MLFLOW_URI = "http://mlflow-service.default.svc.cluster.local"
 
 def treinar_modelo():
     import logging
