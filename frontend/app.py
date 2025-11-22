@@ -7,6 +7,7 @@ import pytz
 import time
 import mlflow.pyfunc
 import os
+import pandas as pd
 
 app = FastAPI()
 
@@ -29,9 +30,40 @@ async def wait_for_dag_result(dag_id, dag_run_id):
         time.sleep(5)
 
 
-MLFLOW_TRACKING_URI = os.getenv("MLFLOW_TRACKING_URI", "http://mlflow-service.default.svc.cluster.local:5000")
+MLFLOW_TRACKING_URI = os.getenv("MLFLOW_TRACKING_URI", "http://mlflow-service.default.svc.cluster.local")
 AIRFLOW_USER = os.getenv("AIRFLOW_USER", "admin")
 AIRFLOW_PASS = os.getenv("AIRFLOW_PASS", "admin")
+
+MODEL_URI = "models:/modelo_linear_teste/Production"
+
+ml_models = {}
+
+@asynccontextmanager
+async def lifespan(app: FastAPI):
+    """
+    Esta função roda APENAS UMA VEZ quando o servidor sobe.
+    É aqui que carregamos o modelo para a memória RAM.
+    """
+    print("🔄 Inicializando API e carregando modelo do MLflow/GCS...")
+    
+    try:
+        mlflow.set_tracking_uri(MLFLOW_TRACKING_URI)
+        
+        model = mlflow.pyfunc.load_model(MODEL_URI)
+        
+        ml_models["linear_model"] = model
+        print("✅ Modelo carregado com sucesso!")
+        
+    except Exception as e:
+        print(f"❌ Erro CRÍTICO ao carregar modelo: {e}")
+        
+    
+    yield
+    
+    ml_models.clear()
+    print("🛑 API desligando.")
+
+app = FastAPI(lifespan=lifespan)
 
 
 @app.get("/")
@@ -84,17 +116,16 @@ async def chat():
 
 @app.post("/chat")
 def predict_question(question: str):
-    if not model:
-        return {"error": "Modelo ainda não carregado"}
+    model = ml_models["linear_model"]
     
     mlflow.set_tracking_uri(MLFLOW_TRACKING_URI)
     
     print("Carregando modelo do MLflow...")
     try:
-        model = mlflow.pyfunc.load_model("models:/modelo_linear_teste/Production")
-
-    except Exception as e:
-        print(f"Erro ao carregar modelo: {e}")
+        input_data = pd.DataFrame([question], columns=["texto"])
+        prediction = model.predict(input_data)
         
-    prediction = model.predict(question)
-    return {"prediction": prediction.tolist()}
+        return {"prediction": prediction.tolist()}
+    
+    except Exception as e:
+        return {"error": f"Erro na predição: {str(e)}"}

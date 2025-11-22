@@ -4,7 +4,7 @@ WORKDIR /app
 
 COPY . /app
 
-RUN pip install fastapi requests uvicorn pytz mlflow
+RUN pip install fastapi requests uvicorn pytz mlflow pandas
 
 EXPOSE 8000
 

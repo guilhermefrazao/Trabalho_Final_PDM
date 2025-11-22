@@ -12,6 +12,7 @@ def treinar_modelo():
     import logging
     import mlflow
     import mlflow.sklearn
+    from mlflow.models.signature import infer_signature
     from sklearn.linear_model import LinearRegression
     import numpy as np
 
@@ -31,11 +32,13 @@ def treinar_modelo():
     model.fit(X, y)
     logger.info("Treinamento concluído.")
 
+    signature = infer_signature(X, prediction=model.predict(X))
+
     with mlflow.start_run() as run:
         run_id = run.info.run_id
         logger.info(f"Iniciando MLflow Run ID: {run_id}")
 
-        mlflow.sklearn.log_model(model, artifact_path="modelo")
+        mlflow.sklearn.log_model(model, artifact_path="modelo", signature=signature)
         logger.info("Modelo logado no MLflow.")
 
         mlflow.log_metric("rmse", 0.0)
