@@ -1,6 +1,7 @@
 from fastapi import FastAPI
 import requests
 from datetime import datetime, timedelta
+from contextlib import asynccontextmanager
 import random
 import pytz
 import time
@@ -30,8 +31,8 @@ async def wait_for_dag_result(dag_id, dag_run_id, headers):
 
 MLFLOW_TRACKING_URI = os.getenv("MLFLOW_TRACKING_URI", "http://mlflow-service.default.svc.cluster.local:5000")
 
-@app.lifespan("startup")
-def load_model():
+@asynccontextmanager
+async def lifespan(app: FastAPI):
     global model
     mlflow.set_tracking_uri(MLFLOW_TRACKING_URI)
     
