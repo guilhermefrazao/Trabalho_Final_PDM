@@ -8,10 +8,6 @@ from airflow.operators.bash import BashOperator
 from airflow.operators.python import PythonOperator
 import logging 
 from datetime import datetime
-import mlflow
-import mlflow.sklearn
-from sklearn.linear_model import LinearRegression
-import numpy as np
 
 
 log = logging.getLogger("meu_app")
@@ -19,6 +15,11 @@ log = logging.getLogger("meu_app")
 MLFLOW_URI = "http://mlflow-service.default.svc.cluster.local:5000"
 
 def treinar_modelo():
+    import mlflow
+    import mlflow.sklearn
+    from sklearn.linear_model import LinearRegression
+    import numpy as np
+
     mlflow.set_tracking_uri(MLFLOW_URI)
     mlflow.set_experiment("exemplo-registro-modelo")
     

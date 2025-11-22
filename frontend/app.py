@@ -39,8 +39,13 @@ async def lifespan(app: FastAPI):
     mlflow.set_tracking_uri(MLFLOW_TRACKING_URI)
     
     print("Carregando modelo do MLflow...")
-    model = mlflow.pyfunc.load_model("models:/modelo_linear_teste/Production")
-    print("Modelo carregado com sucesso!")
+    try:
+        model = mlflow.pyfunc.load_model("models:/modelo_linear_teste/Production")
+        print("Modelo carregado com sucesso!")
+    except Exception as e:
+        print(f"Erro ao carregar modelo: {e}")
+
+    yield
 
 app = FastAPI(lifespan=lifespan)
 
