@@ -46,18 +46,6 @@ O pipeline segue a arquitetura Medallion para garantir a qualidade e a rastreabi
 * `docker-compose.yml`: Arquivo de configuração para iniciar o container do banco de dados PostgreSQL.
 * `requirements.txt`: Lista de todas as dependências Python do projeto.
 
----
-
-## 📋 Pré-requisitos
-
-Antes de começar, garanta que você tem as seguintes ferramentas instaladas:
-
-1.  [Python 3.9+](https://www.python.org/downloads/)
-2.  [Docker Desktop](https://www.docker.com/products/docker-desktop/) (Certifique-se de que ele esteja em execução!)
-3.  [Git](https://git-scm.com/downloads)
-
----
-
 ## 🚀 Como Executar o Pipeline (Passo a Passo)
 
 Siga estes passos na ordem correta para executar o projeto do zero.
@@ -68,38 +56,64 @@ Siga estes passos na ordem correta para executar o projeto do zero.
 git clone [https://github.com/seu-usuario/seu-repositorio.git](https://github.com/seu-usuario/seu-repositorio.git)
 cd seu-repositorio
 ```
+### 2. Executando código: 
 
-### 2. Criar o `requirements.txt`
+**Documentação usada**
+https://airflow.apache.org/docs/apache-airflow/stable/howto/docker-compose/index.html
 
-Crie um arquivo chamado `requirements.txt` e cole o seguinte conteúdo (são as bibliotecas que usamos):
+**Criando ambiente airflow**
 
-```txt
-requests
-beautifulsoup4
-pandas
-sqlalchemy
-psycopg2-binary
-lxml
-langchain
-langchain_google_genai
-langchain_community
+*Windows* 
+```bash
+mkdir dags, logs, plugins, config
 ```
 
-### 3. Instalar as Dependências
+*Linux*
+```bash
+mkdir -p ./dags ./logs ./plugins ./config
+```
 
-Crie um ambiente virtual e instale as bibliotecas:
+**Adicionar Variavel de ambiente**
+
+*Windows* 
+```bash
+"AIRFLOW_UID=5000" | Out-File -Encoding UTF8 -FilePath .env
+```
+
+*Linux*
+```bash
+echo -e "AIRFLOW_UID=$(id -u)" > .env
+```
+
+**Inicializando arquivo de configurações**
 
 ```bash
-# Crie o ambiente virtual (recomendado)
-python -m venv venv
-
-# Ative o ambiente (Windows PowerShell)
-.\venv\Scripts\Activate.ps1
-# (Use 'source venv/bin/activate' no Mac/Linux)
-
-# Instale os pacotes
-pip install -r requirements.txt
+docker compose run airflow-cli airflow config list
 ```
+
+
+**Instanciando banco de dados e criando conta**
+
+```bash
+docker compose up airflow-init
+```
+
+- Criada a conta Airflow, com login: "airflow" e senha: "airflow"
+
+
+**Rodando Airflow**
+
+```bash
+docker compose up
+```
+
+
+**Reiniciando servidor ao subir alterações**
+
+```bash
+docker compose restart
+```
+
 
 ### 4. Iniciar o Banco de Dados (Camada Prata)
 
@@ -108,40 +122,26 @@ Com o Docker Desktop aberto e em execução, inicie o container do PostgreSQL:
 ```bash
 docker-compose up -d
 ```
+
 *O banco de dados agora está rodando em segundo plano.*
 
-### 5. Executar o Pipeline de Coleta (Bronze)
+
+
+### 5. Utilizando terraform para subir a arquitetura para produção:
 
 ```bash
-# Passo 1: Coletar os links
-python 001_coletor_de_links.py
-
-# Passo 2: Extrair os dados brutos (ISSO VAI DEMORAR!)
-python 002_extrator_infobox.py
+terraform init --upgrade
 ```
-*Ao final, você terá a pasta `/bronze_data` cheia de JSONs.*
-
-### 6. Executar o Pipeline ETL (Prata)
-
-Este script transforma os JSONs brutos no banco de dados limpo:
 
 ```bash
-# Passo 3: Limpar, normalizar e carregar no PostgreSQL
-python 003_bronze_para_prata.py
+terraform apply -target=google_artifact_registry_repository.repo
 ```
-*Neste ponto, seu banco de dados no Docker está populado e pronto.*
 
-### 7. Exportar os Entregáveis (CSV)
-
-Este é o script final para gerar os arquivos para a equipe de IA:
 
 ```bash
-# Passo 4: Exportar as tabelas Prata para arquivos CSV
-python 004_prata_csv.py
+terraform apply -var="image_tag=tag_da_imagem_docker_artifact_repository"
 ```
-*Parabéns! Verifique a pasta `/silver_exports`. Seus 5 arquivos CSV (`movies.csv`, `people.csv`, etc.) estão prontos para serem enviados ao Google Drive.*
 
----
 
 ## 📊 Esquema da Camada Prata (Entregável)
 

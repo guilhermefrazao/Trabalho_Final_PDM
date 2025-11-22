@@ -1,20 +1,24 @@
 from fastapi import FastAPI
 import requests
 from datetime import datetime, timedelta
+from contextlib import asynccontextmanager
 import random
 import pytz
 import time
+import mlflow.pyfunc
+import os
+import pandas as pd
 
 app = FastAPI()
 
-AIRFLOW_API = "http://trabalho_final_pdm-airflow-apiserver-1:8080/api/v2"
-DAG_ID = "exemplo_pipeline_completo"
+AIRFLOW_API = "http://airflow-webserver.airflow.svc.cluster.local:8080/api/v1"
+DAG_ID = "executar_treinamento_k8s"
 
-async def wait_for_dag_result(dag_id, dag_run_id, headers):
+async def wait_for_dag_result(dag_id, dag_run_id):
     while True:
         resp = requests.get(
             f"{AIRFLOW_API}/dags/{dag_id}/dagRuns/{dag_run_id}",
-            headers=headers
+            auth=(AIRFLOW_USER, AIRFLOW_PASS)
         )
         data = resp.json()
         state = data.get("state")
@@ -26,32 +30,51 @@ async def wait_for_dag_result(dag_id, dag_run_id, headers):
         time.sleep(5)
 
 
+MLFLOW_TRACKING_URI = os.getenv("MLFLOW_TRACKING_URI", "http://mlflow-service.default.svc.cluster.local")
+AIRFLOW_USER = os.getenv("AIRFLOW_USER", "admin")
+AIRFLOW_PASS = os.getenv("AIRFLOW_PASS", "admin")
+
+MODEL_URI = "models:/modelo_linear_teste/Production"
+
+ml_models = {}
+
+@asynccontextmanager
+async def lifespan(app: FastAPI):
+    """
+    Esta função roda APENAS UMA VEZ quando o servidor sobe.
+    É aqui que carregamos o modelo para a memória RAM.
+    """
+    print("🔄 Inicializando API e carregando modelo do MLflow/GCS...")
+    
+    try:
+        mlflow.set_tracking_uri(MLFLOW_TRACKING_URI)
+        
+        model = mlflow.pyfunc.load_model(MODEL_URI)
+        
+        ml_models["linear_model"] = model
+        print("✅ Modelo carregado com sucesso!")
+        
+    except Exception as e:
+        print(f"❌ Erro CRÍTICO ao carregar modelo: {e}")
+        
+    
+    yield
+    
+    ml_models.clear()
+    print("🛑 API desligando.")
+
+app = FastAPI(lifespan=lifespan)
+
+
 @app.get("/")
 async def home():
-    return {"status": "FastAPI conectado"}
+    return {"status": "FastAPI testando o novo CI com o push no github"}
 
-@app.post("/executar_dag")
-async def chat(question: str):
+@app.post("/retrain_dag")
+async def chat():
     """
     Recebe a pergunta, dispara um DAG no Airflow e retorna a resposta.
     """
-
-    url_token = "http://trabalho_final_pdm-airflow-apiserver-1:8080/auth/token"
-
-    data = {
-    "username": "airflow",
-    "password": "airflow"
-    }
-
-
-    token = requests.post(url=url_token, headers={"Content-Type": "application/json"}, json=data)
-
-    if token.status_code == 201:
-        data = token.json()
-        token = data.get("access_token") or data.get("token") or data.get("jwt")  # o campo exato pode variar conforme versão
-        print("Token obtido:\n", token)
-    else:
-        print("Falha ao obter token:", token.status_code, token.text, "\n")
 
     dag_run_url = f"{AIRFLOW_API}/dags/{DAG_ID}/dagRuns"
 
@@ -70,14 +93,9 @@ async def chat(question: str):
     "note": "Disparo via FastAPI"
     }
 
-    headers = {
-        "Authorization": f"Bearer {token}",
-        "Content-Type": "application/json"
-    }
-
     resp = requests.post(
     url=dag_run_url,
-    headers=headers,
+    auth=(AIRFLOW_USER, AIRFLOW_PASS),
     json=data_dag
     )
 
@@ -87,12 +105,27 @@ async def chat(question: str):
     else:
         print("Falha ao obter resp:\n", resp.status_code, resp.text)
 
-    data_response = await wait_for_dag_result(DAG_ID, data_dag["dag_run_id"], headers=headers)
+    data_response = await wait_for_dag_result(DAG_ID, data_dag["dag_run_id"])
 
     return {
         "mensagem": f"DAG '{DAG_ID}' executando...",    
         "dados": {
-            "question": question,
             "response": data_response
         }
     }
+
+@app.post("/chat")
+def predict_question(question: str):
+    model = ml_models["linear_model"]
+    
+    mlflow.set_tracking_uri(MLFLOW_TRACKING_URI)
+    
+    print("Carregando modelo do MLflow...")
+    try:
+        input_data = pd.DataFrame([question], columns=["texto"])
+        prediction = model.predict(input_data)
+        
+        return {"prediction": prediction.tolist()}
+    
+    except Exception as e:
+        return {"error": f"Erro na predição: {str(e)}"}

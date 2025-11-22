@@ -1,0 +1,31 @@
+defaultAirflowTag: "2.10.3"
+
+executor: KubernetesExecutor
+postgresql:
+  enabled: true
+  image:
+    repository: postgres
+    tag: 13-alpine  
+    pullPolicy: IfNotPresent
+dags:
+  gitSync:
+    enabled: true
+    repo: "https://github.com/guilhermefrazao/Trabalho_Final_PDM.git"
+    branch: "feat/infra"
+    subPath: "dags"
+
+apiServer:
+  enabled: false
+
+webserver:
+  enabled: true         
+  defaultUser:       
+    enabled: true
+    role: Admin
+    username: admin
+    password: admin
+    firstName: Admin
+    lastName: User
+    email: admin@example.com
+  service:
+    type: LoadBalancer

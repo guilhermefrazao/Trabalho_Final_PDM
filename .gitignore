@@ -1,3 +1,15 @@
 .env
 /config
 /logs
+.github/workflows/deploy.yml
+infra_tf/.terraform.tfstate.lock.info
+/infra_tf/.terraform
+infra_tf/terraform.tfstate
+infra_tf/terraform.tfstate.backup
+app_tf/.terraform.tfstate.lock.info
+/app_tf/.terraform
+app_tf/terraform.tfstate
+app_tf/terraform.tfstate.backup
+infra_tf/.terraform.lock.hcl
+app_tf/terraform.tfstate.1763777297.backup
+TODO.md
