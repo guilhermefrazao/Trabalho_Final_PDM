@@ -62,7 +62,7 @@ with DAG(
     description="Dag de treinamento do modelo que está no cluster kubernetes",
     schedule=None,
     default_args=default_args,
-    start_date=datetime(2025, 11, 7),        # primeira data de execução
+    start_date=datetime(2023, 11, 7),        # primeira data de execução
     catchup=False,                           # não roda execuções antigas
     tags=["exemplo", "tutorial"],            # tags para filtro no UI
 ) as dag:

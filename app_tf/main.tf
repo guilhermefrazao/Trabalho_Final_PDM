@@ -68,6 +68,8 @@ webserver:
           memory: 1024Mi
 
 env:
+  - name: "AIRFLOW__API__AUTH_BACKENDS"
+    value: "airflow.api.auth.backend.basic_auth"
   - name: "_PIP_ADDITIONAL_REQUIREMENTS"
     value: "mlflow google-cloud-storage scikit-learn numpy pandas"
 
@@ -114,7 +116,7 @@ resource "kubernetes_deployment" "fastapi" {
           }
           env {
             name  = "MLFLOW_TRACKING_URI"
-            value = "http://mlflow-service.airflow.svc.cluster.local:5000"
+            value = "http://mlflow-service.default.svc.cluster.local"
           }
         }
       }
