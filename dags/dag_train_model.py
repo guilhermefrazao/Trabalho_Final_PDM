@@ -60,7 +60,7 @@ default_args = {
 with DAG(
     dag_id="executar_treinamento_k8s",    
     description="Dag de treinamento do modelo que está no cluster kubernetes",
-    schedule="",
+    schedule=None,
     default_args=default_args,
     start_date=datetime(2025, 11, 7),        # primeira data de execução
     catchup=False,                           # não roda execuções antigas
