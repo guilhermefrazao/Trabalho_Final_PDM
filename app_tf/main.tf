@@ -103,6 +103,14 @@ resource "kubernetes_deployment" "fastapi" {
             name  = "AIRFLOW_HOST"
             value = "airflow-webserver.airflow.svc.cluster.local:8000"
           }
+          env {
+            name = "GOOGLE_APPLICATION_CREDENTIALS"
+            value = "/var/secrets/google/key.json" 
+          }
+          env {
+            name  = "MLFLOW_TRACKING_URI"
+            value = "http://mlflow-service.airflow.svc.cluster.local:5000"
+          }
         }
       }
     }

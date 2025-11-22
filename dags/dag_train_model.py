@@ -16,17 +16,6 @@ import numpy as np
 
 log = logging.getLogger("meu_app")
 
-
-default_args = {
-    "owner": "airflow",                 # dono do DAG
-    "depends_on_past": False,           # não depende de execuções anteriores
-    "email": ["guilhermefrazao@discente.ufg.br"],   # para notificações
-    "email_on_failure": False,          # desativa alertas de falha
-    "email_on_retry": False,
-    "retries": 1,                       # número de tentativas em caso de erro
-    "retry_delay": timedelta(minutes=0.1) # intervalo entre tentativas
-}
-
 MLFLOW_URI = "http://mlflow-service.default.svc.cluster.local:5000"
 
 def treinar_modelo():
@@ -56,9 +45,21 @@ def treinar_modelo():
         print(f"Modelo versão {mv.version} promovido para Production")
 
 
+default_args = {
+    "owner": "airflow",                 # dono do DAG
+    "depends_on_past": False,           # não depende de execuções anteriores
+    "email": ["guilhermefrazao@discente.ufg.br"],   # para notificações
+    "email_on_failure": False,          # desativa alertas de falha
+    "email_on_retry": False,
+    "retries": 1,                       # número de tentativas em caso de erro
+    "retry_delay": timedelta(minutes=0.1) # intervalo entre tentativas
+}
+
+
 with DAG(
     dag_id="executar_treinamento_k8s",    
     description="Dag de treinamento do modelo que está no cluster kubernetes",
+    schedule="",
     default_args=default_args,
     start_date=datetime(2025, 11, 7),        # primeira data de execução
     catchup=False,                           # não roda execuções antigas
