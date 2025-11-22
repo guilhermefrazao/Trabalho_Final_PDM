@@ -66,6 +66,11 @@ webserver:
         requests:
           cpu: 2000m
           memory: 1024Mi
+
+env:
+  - name: "_PIP_ADDITIONAL_REQUIREMENTS"
+    value: "mlflow google-cloud-storage scikit-learn numpy pandas"
+
 EOF
   ]
 }
@@ -134,3 +139,57 @@ resource "kubernetes_service" "fastapi_service" {
   }
 }
 
+resource "kubernetes_deployment" "model_ml_flow" {
+    metadata {
+        name = "mlflow-app"
+        labels = {
+        app = "mlflow"
+        }
+    }
+
+  spec {
+    replicas = 2
+    selector {
+      match_labels = {
+        app = "mlflow"
+      }
+    }
+    template {
+      metadata {
+        labels = {
+          app = "mlflow"
+        }
+      }
+      spec {
+        container {
+          image = "us-central1-docker.pkg.dev/${var.project}/${data.terraform_remote_state.infra.outputs.repo_name}/ml-flow:${var.image_tag_mlflow}"
+          name  = "mlflow"
+          port {
+            container_port = 5000
+          }
+          
+          env {
+            name  = "AIRFLOW_HOST"
+            value = "airflow-webserver.airflow.svc.cluster.local:5000"
+          }
+        }
+      }
+    }
+  }
+}
+
+resource "kubernetes_service" "mlflow_service" {
+  metadata {
+    name = "mlflow-service"
+  }
+  spec {
+    selector = {
+      app = "mlflow"
+    }
+    port {
+      port        = 80
+      target_port = 5000
+    }
+    type = "LoadBalancer"
+  }
+}

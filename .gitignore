@@ -11,3 +11,5 @@ app_tf/.terraform.tfstate.lock.info
 app_tf/terraform.tfstate
 app_tf/terraform.tfstate.backup
 infra_tf/.terraform.lock.hcl
+app_tf/terraform.tfstate.1763777297.backup
+TODO.md
