@@ -24,3 +24,8 @@ output "repo_name" {
   description = "Repositóry name"
   value       = google_artifact_registry_repository.repo.name
 }
+
+output "bucket_name" {
+  description = "Bucket to keep de model .pkl"
+  value       = google_storage_bucket.mlflow_bucket.name
+}

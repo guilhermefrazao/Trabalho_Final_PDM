@@ -39,6 +39,30 @@ resource "google_artifact_registry_repository" "repo" {
   depends_on = [time_sleep.wait_seconds]
 }
 
+
+resource "google_storage_bucket" "mlflow_bucket" {
+  name          = "${var.project}-mlflow-artifacts"
+  location      = var.region
+  force_destroy = true
+
+  storage_class = "STANDARD"
+
+  uniform_bucket_level_access = true
+  public_access_prevention    = "enforced"
+
+  versioning {
+    enabled = true
+  }
+}
+
+
+resource "google_storage_bucket_iam_member" "gke_access" {
+  bucket = google_storage_bucket.mlflow_bucket.name
+  role   = "roles/storage.objectAdmin"
+
+  member = "serviceAccount:${google_service_account.Pdm-2025-creditos.email}"
+}
+
 resource "google_project_iam_member" "sa_artifact_registry_access" {
   project = var.project
   role    = "roles/artifactregistry.reader"

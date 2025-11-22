@@ -172,6 +172,18 @@ resource "kubernetes_deployment" "model_ml_flow" {
             name  = "AIRFLOW_HOST"
             value = "airflow-webserver.airflow.svc.cluster.local:5000"
           }
+          args = [
+            "mlflow", "server",
+            "--host", "0.0.0.0",   
+            "--port", "5000",     
+            "--backend-store-uri", "sqlite:///mlflow.db",
+            "--default-artifact-root", "gs://${data.terraform_remote_state.infra.outputs.bucket_name}/mlruns",
+            "--allowed-hosts", "*" 
+          ]
+          env {
+            name  = "GOOGLE_APPLICATION_CREDENTIALS"
+            value = "/var/secrets/google/key.json" 
+          }
         }
       }
     }

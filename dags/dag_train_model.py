@@ -75,7 +75,7 @@ with DAG(
 
     # Tarefa 2: executa uma função Python
     treinamento = PythonOperator(
-        task_id="execute training with mlflow",
+        task_id="execute_training_with_mlflow",
         python_callable = treinar_modelo     
     )
 

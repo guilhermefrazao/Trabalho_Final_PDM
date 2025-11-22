@@ -2,40 +2,15 @@
 #TODO: criar o cluster manualmente
 #TODO: criar o cluster automáticamente e adicionar o docker-compose dentro dele.
 
-resource "kubernetes_deployement" "model_ml_flow" {
-    metadata {
-        name = "mlflow-app"
-        labels = {
-        app = "mlflow"
-        }
-    }
+args = [
+            "mlflow", "server",
+            "--host", "0.0.0.0",
+            "--port", "5000",
+            "--backend-store-uri", "sqlite:///mlflow.db", 
+            "--default-artifact-root", "gs://${var.bucket_name}/mlruns" 
+          ]
 
-  spec {
-    replicas = 2
-    selector {
-      match_labels = {
-        app = "mlflow"
-      }
-    }
-    template {
-      metadata {
-        labels = {
-          app = "mlflow"
-        }
-      }
-      spec {
-        container {
-          image = "us-central1-docker.pkg.dev/${var.project}/${data.terraform_remote_state.infra.outputs.repo_name}/mlflow-app:${var.image_tag_mlflow}"
-          name  = "mlflow"
-          port {
-            container_port = 80
-          }
           env {
-            name  = "AIRFLOW_HOST"
-            value = "airflow-webserver.airflow.svc.cluster.local:5000"
+            name  = "GOOGLE_APPLICATION_CREDENTIALS"
+            value = "/var/secrets/google/key.json" # Exemplo, ajuste se usar Workload Identity
           }
-        }
-      }
-    }
-  }
-}
