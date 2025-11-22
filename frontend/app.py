@@ -33,21 +33,6 @@ MLFLOW_TRACKING_URI = os.getenv("MLFLOW_TRACKING_URI", "http://mlflow-service.de
 AIRFLOW_USER = os.getenv("AIRFLOW_USER", "admin")
 AIRFLOW_PASS = os.getenv("AIRFLOW_PASS", "admin")
 
-@asynccontextmanager
-async def lifespan(app: FastAPI):
-    global model
-    mlflow.set_tracking_uri(MLFLOW_TRACKING_URI)
-    
-    print("Carregando modelo do MLflow...")
-    try:
-        model = mlflow.pyfunc.load_model("models:/modelo_linear_teste/Production")
-        print("Modelo carregado com sucesso!")
-    except Exception as e:
-        print(f"Erro ao carregar modelo: {e}")
-
-    yield
-
-app = FastAPI(lifespan=lifespan)
 
 @app.get("/")
 async def home():
@@ -102,5 +87,14 @@ def predict_question(question: str):
     if not model:
         return {"error": "Modelo ainda não carregado"}
     
+    mlflow.set_tracking_uri(MLFLOW_TRACKING_URI)
+    
+    print("Carregando modelo do MLflow...")
+    try:
+        model = mlflow.pyfunc.load_model("models:/modelo_linear_teste/Production")
+
+    except Exception as e:
+        print(f"Erro ao carregar modelo: {e}")
+        
     prediction = model.predict(question)
     return {"prediction": prediction.tolist()}

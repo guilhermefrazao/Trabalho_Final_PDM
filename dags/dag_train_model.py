@@ -20,7 +20,7 @@ def treinar_modelo():
     logger.info("Iniciando a função de treinamento do modelo.")
 
     mlflow.set_tracking_uri(MLFLOW_URI)
-    mlflow.set_experiment("exemplo-registro-modelo")
+    mlflow.set_experiment("train_model")
     
     logger.info("Preparando dados de treino...")
     X = np.array([[1], [2], [3], [4]])

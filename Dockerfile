@@ -1,29 +1,22 @@
-# Use a mesma versão que você definiu no Terraform (defaultAirflowTag)
-FROM apache/airflow:2.10.3
+# Use a imagem base oficial do Airflow (ajuste a versão conforme seu cluster)
+FROM apache/airflow:2.7.1
 
-# Troca para usuário root para instalar dependências do sistema se necessário (opcional)
+# Mude para o usuário root para instalar dependências de sistema (se necessário)
 USER root
 RUN apt-get update \
   && apt-get install -y --no-install-recommends \
-         build-essential \
+         gcc \
+         g++ \
   && apt-get autoremove -yqq --purge \
   && apt-get clean \
   && rm -rf /var/lib/apt/lists/*
 
-# Volta para o usuário airflow para instalar pacotes Python (Prática de segurança)
+# Volte para o usuário airflow para instalar pacotes Python
 USER airflow
 
-# Instala as bibliotecas que seu modelo precisa
-# google-cloud-storage: para salvar o modelo no bucket
-# mlflow: para registrar o modelo
-# scikit-learn, numpy, pandas: para o treinamento
+# Instale as bibliotecas que seu modelo precisa APENAS UMA VEZ aqui
 RUN pip install --no-cache-dir \
     mlflow \
-    google-cloud-storage \
     scikit-learn \
     numpy \
     pandas
-
-env:
-  - name: "_PIP_ADDITIONAL_REQUIREMENTS"
-    value: "mlflow google-cloud-storage scikit-learn numpy pandas"
