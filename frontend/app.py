@@ -10,14 +10,14 @@ import os
 
 app = FastAPI()
 
-AIRFLOW_API = "http://airflow-webserver.airflow.svc.cluster.local:8080/api/v2"
+AIRFLOW_API = "http://airflow-webserver.airflow.svc.cluster.local:8080/api/v1"
 DAG_ID = "executar_treinamento_k8s"
 
 async def wait_for_dag_result(dag_id, dag_run_id, headers):
     while True:
         resp = requests.get(
             f"{AIRFLOW_API}/dags/{dag_id}/dagRuns/{dag_run_id}",
-            headers=headers
+            auth=(AIRFLOW_USER, AIRFLOW_PASS)
         )
         data = resp.json()
         state = data.get("state")
@@ -30,6 +30,8 @@ async def wait_for_dag_result(dag_id, dag_run_id, headers):
 
 
 MLFLOW_TRACKING_URI = os.getenv("MLFLOW_TRACKING_URI", "http://mlflow-service.default.svc.cluster.local:5000")
+AIRFLOW_USER = os.getenv("AIRFLOW_USER", "admin")
+AIRFLOW_PASS = os.getenv("AIRFLOW_PASS", "admin")
 
 @asynccontextmanager
 async def lifespan(app: FastAPI):
@@ -40,7 +42,7 @@ async def lifespan(app: FastAPI):
     model = mlflow.pyfunc.load_model("models:/modelo_linear_teste/Production")
     print("Modelo carregado com sucesso!")
 
-
+app = FastAPI(lifespan=lifespan)
 
 @app.get("/")
 async def home():
@@ -51,23 +53,6 @@ async def chat():
     """
     Recebe a pergunta, dispara um DAG no Airflow e retorna a resposta.
     """
-
-    url_token = "http://airflow-webserver.airflow.svc.cluster.local:8080/auth/token"
-
-    data = {
-    "username": "airflow",
-    "password": "airflow"
-    }
-
-
-    token = requests.post(url=url_token, headers={"Content-Type": "application/json"}, json=data)
-
-    if token.status_code == 201:
-        data = token.json()
-        token = data.get("access_token") or data.get("token") or data.get("jwt")  # o campo exato pode variar conforme versão
-        print("Token obtido:\n", token)
-    else:
-        print("Falha ao obter token:", token.status_code, token.text, "\n")
 
     dag_run_url = f"{AIRFLOW_API}/dags/{DAG_ID}/dagRuns"
 
@@ -86,14 +71,9 @@ async def chat():
     "note": "Disparo via FastAPI"
     }
 
-    headers = {
-        "Authorization": f"Bearer {token}",
-        "Content-Type": "application/json"
-    }
-
     resp = requests.post(
     url=dag_run_url,
-    headers=headers,
+    auth=(AIRFLOW_USER, AIRFLOW_PASS),
     json=data_dag
     )
 
@@ -103,7 +83,7 @@ async def chat():
     else:
         print("Falha ao obter resp:\n", resp.status_code, resp.text)
 
-    data_response = await wait_for_dag_result(DAG_ID, data_dag["dag_run_id"], headers=headers)
+    data_response = await wait_for_dag_result(DAG_ID, data_dag["dag_run_id"])
 
     return {
         "mensagem": f"DAG '{DAG_ID}' executando...",    
@@ -112,7 +92,7 @@ async def chat():
         }
     }
 
-app.post("/chat")
+@app.post("/chat")
 def predict_question(question: str):
     if not model:
         return {"error": "Modelo ainda não carregado"}
