@@ -14,7 +14,6 @@ app = FastAPI()
 AIRFLOW_API = "http://airflow-webserver.airflow.svc.cluster.local:8080/api/v1"
 DAG_ID = "executar_treinamento_k8s"
 
-
 async def wait_for_dag_result(dag_id, dag_run_id):
     while True:
         resp = requests.get(
@@ -38,7 +37,6 @@ AIRFLOW_PASS = os.getenv("AIRFLOW_PASS", "admin")
 MODEL_URI = "models:/modelo_linear_teste/Production"
 
 ml_models = {}
-
 
 @asynccontextmanager
 async def lifespan(app: FastAPI):
