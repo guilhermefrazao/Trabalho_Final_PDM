@@ -30,7 +30,7 @@ resource "helm_release" "airflow" {
   namespace        = "airflow"
   create_namespace = true
   timeout          = 600
-  wait = false
+  wait             = false
   version          = "1.11.0"
 
   values = [
@@ -111,8 +111,8 @@ resource "kubernetes_deployment" "fastapi" {
             value = "airflow-webserver.airflow.svc.cluster.local:8000"
           }
           env {
-            name = "GOOGLE_APPLICATION_CREDENTIALS"
-            value = "/var/secrets/google/key.json" 
+            name  = "GOOGLE_APPLICATION_CREDENTIALS"
+            value = "/var/secrets/google/key.json"
           }
           env {
             name  = "MLFLOW_TRACKING_URI"
@@ -142,12 +142,12 @@ resource "kubernetes_service" "fastapi_service" {
 }
 
 resource "kubernetes_deployment" "model_ml_flow" {
-    metadata {
-        name = "mlflow-app"
-        labels = {
-        app = "mlflow"
-        }
+  metadata {
+    name = "mlflow-app"
+    labels = {
+      app = "mlflow"
     }
+  }
 
   spec {
     replicas = 2
@@ -169,22 +169,22 @@ resource "kubernetes_deployment" "model_ml_flow" {
           port {
             container_port = 5000
           }
-          
+
           env {
             name  = "AIRFLOW_HOST"
             value = "airflow-webserver.airflow.svc.cluster.local:5000"
           }
           args = [
             "mlflow", "server",
-            "--host", "0.0.0.0",   
-            "--port", "5000",     
+            "--host", "0.0.0.0",
+            "--port", "5000",
             "--backend-store-uri", "sqlite:///mlflow.db",
             "--default-artifact-root", "gs://${data.terraform_remote_state.infra.outputs.bucket_name}/mlruns",
-            "--allowed-hosts", "*" 
+            "--allowed-hosts", "*"
           ]
           env {
             name  = "GOOGLE_APPLICATION_CREDENTIALS"
-            value = "/var/secrets/google/key.json" 
+            value = "/var/secrets/google/key.json"
           }
         }
       }

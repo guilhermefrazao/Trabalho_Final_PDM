@@ -174,5 +174,3 @@ O pipeline gera as seguintes tabelas normalizadas, que são exportadas para CSV:
 * **`movie_composers`** (Tabela de Junção)
     * `movie_id`
     * `person_id`
-
-teste
