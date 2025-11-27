@@ -1,15 +1,64 @@
-.env
-/config
-/logs
-.github/workflows/deploy.yml
-infra_tf/.terraform.tfstate.lock.info
-/infra_tf/.terraform
-infra_tf/terraform.tfstate
-infra_tf/terraform.tfstate.backup
-app_tf/.terraform.tfstate.lock.info
-/app_tf/.terraform
-app_tf/terraform.tfstate
-app_tf/terraform.tfstate.backup
-infra_tf/.terraform.lock.hcl
-app_tf/terraform.tfstate.1763777297.backup
-TODO.md
+# Python
+__pycache__/
+*.py[cod]
+*$py.class
+*.so
+.Python
+build/
+develop-eggs/
+dist/
+downloads/
+eggs/
+.eggs/
+lib/
+lib64/
+parts/
+sdist/
+var/
+wheels/
+*.egg-info/
+.installed.cfg
+*.egg
+
+# Virtual Environment
+venv/
+env/
+ENV/
+.venv
+
+# IDE
+.vscode/
+.idea/
+*.swp
+*.swo
+*~
+
+# Jupyter Notebook
+.ipynb_checkpoints
+*.ipynb
+
+# Logs
+logs/
+*.log
+
+# Models
+models/checkpoints/*
+!models/checkpoints/.gitkeep
+
+# Data
+data/raw/*
+data/processed/*
+!data/raw/.gitkeep
+!data/processed/.gitkeep
+
+# OS
+.DS_Store
+Thumbs.db
+
+# Testing
+.pytest_cache/
+.coverage
+htmlcov/
+
+# Tensorboard
+runs/
