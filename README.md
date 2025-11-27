@@ -1,176 +1,68 @@
-# 🚀 Projeto de Pipeline de Dados de Filmes (Wikipedia)
+# Trabalho_Final_PDM
 
-Este é um projeto acadêmico para a disciplina de Processamento de Dados Massivos. O objetivo é construir um pipeline de dados completo (ETL) que coleta informações de filmes da Wikipédia, processa e armazena esses dados em um banco de dados normalizado (Camada Prata), pronto para ser consumido por uma equipe de IA para consultas "Text-to-SQL".
+# Assistente de IA para Dados do IMDb
 
----
+**Disciplina:** Processamento de Dados Massivos
 
-## 🏛️ Arquitetura (Medallion)
+**Status:** `[Em Andamento]`
 
-O pipeline segue a arquitetura Medallion para garantir a qualidade e a rastreabilidade dos dados:
+## 👥 Equipe
 
-1.  **Camada Bronze (Dados Brutos):**
-    * **Formato:** Milhares de arquivos `.json` individuais, um para cada filme.
-    * **Origem:** Web scraping da "Infobox" de cada página de filme na Wikipédia.
-    * **Armazenamento:** Salvo localmente na pasta `/bronze_data`.
-    * **Qualidade:** Dados brutos, "sujos", não processados, exatamente como foram coletados.
+  * Anna Pietra Vitória León Bastos Moreira
+  * Daniel Henrique Pinheiro Silva
+  * Guilherme Frazão Fernandes
+  * Luis Eduardo Fonseca Alves Ferreira Mathias Cruvinel
+  * Maria Carolina Xavier de Almeida
 
-2.  **Camada Prata (Dados Limpos e Normalizados):**
-    * **Formato:** Um banco de dados relacional (PostgreSQL).
-    * **Origem:** Resultado do script de ETL (`003_bronze_para_prata.py`) que lê da Camada Bronze.
-    * **Armazenamento:** Container Docker (`silver_db_postgres`).
-    * **Qualidade:** Dados limpos, tratados (ex: `$100 million` -> `100000000`), normalizados (separados em tabelas `movies`, `people`, etc.) e prontos para consulta.
+## 1\. 🎯 Objetivo
 
-3.  **Entregável (Exportação):**
-    * **Formato:** Arquivos `.csv` (um para cada tabela da Camada Prata).
-    * **Origem:** Script de exportação (`004_prata_csv.py`) que lê do PostgreSQL.
-    * **Armazenamento:** Salvo localmente na pasta `/silver_exports`.
+Este projeto tem como objetivo desenvolver uma solução completa de processamento de dados massivos, desde a ingestão de dados brutos até a disponibilização de dados limpos para alimentar um **Assistente de IA**. O assistente será capaz de responder perguntas sobre filmes, atores, diretores e suas avaliações, usando o dataset do IMDb.
 
----
+## 2\. 🏛️ Arquitetura e Tecnologias
 
-## 🛠️ Tecnologias Utilizadas
+Para este projeto, adotamos uma arquitetura moderna e escalável na nuvem, utilizando o **Google Cloud Platform (GCP)** e o **Google BigQuery** como nossa principal ferramenta de processamento e armazenamento.
 
-* **Linguagem:** Python 3.10+
-* **Web Scraping:** `requests`, `BeautifulSoup4`
-* **ETL e Transformação:** `pandas`, `SQLAlchemy`
-* **Banco de Dados (Prata):** PostgreSQL
-* **Infraestrutura:** Docker e `docker-compose` (para rodar o PostgreSQL)
+Seguimos a **Arquitetura Medallion** para organizar nosso pipeline:
 
----
+  * **Camada Bronze (Brutos):** os dados originais do IMDb, acessados diretamente do dataset público `bigquery-public-data.imdb`. Nenhum dado é movido ou duplicado, apenas lido.
+  * **Camada Prata (Processados):** nossos dados de negócio limpos, filtrados e enriquecidos. Estão armazenados no nosso próprio dataset: `imdb_prata`.
+  * **Camada Ouro (Agregados):** *[Próximo Passo]* tabelas ou *views* agregadas, prontas para serem consumidas por modelos de Machine Learning ou dashboards.
 
-## 📦 Estrutura dos Scripts
+## 3\. ⚙️ Pipeline de Dados (Bronze ➔ Prata)
 
-* `001_coletor_de_links.py`: **Coletor de Links.** Varre as listas de filmes por ano e gera o `links_para_visitar.txt`.
-* `002_extrator_infobox.py`: **Extrator Bronze.** Lê o `.txt`, visita cada link, extrai a Infobox e salva os JSONs brutos na pasta `/bronze_data`.
-* `003_bronze_para_prata.py`: **Pipeline ETL.** Lê os JSONs da `/bronze_data`, limpa, transforma, normaliza e carrega os dados nas tabelas do PostgreSQL.
-* `004_prata_csv.py`: **Exportador CSV.** Conecta-se ao PostgreSQL, lê as tabelas Prata e as salva como arquivos CSV na pasta `/silver_exports`.
-* `docker-compose.yml`: Arquivo de configuração para iniciar o container do banco de dados PostgreSQL.
-* `requirements.txt`: Lista de todas as dependências Python do projeto.
+A primeira fase do projeto foi a engenharia de dados para criar a Camada Prata. O processo foi o seguinte:
 
-## 🚀 Como Executar o Pipeline (Passo a Passo)
+1.  **Ingestão:** leitura direta das tabelas `title_basics`, `title_ratings`, `title_principals` e `name_basics` da Camada Bronze.
+2.  **Filtragem:** selecionamos apenas filmes (`title_type = 'movie'`) lançados do ano 2000 em diante.
+3.  **Limpeza:**
+      * Removemos filmes que não possuíam título (`primary_title IS NOT NULL`).
+      * Padronizamos valores nulos (`NULL`) em colunas como `genres` (para 'Desconhecido') e `runtimeMinutes` (para 0).
+4.  **Enriquecimento:**
+      * Juntamos (`LEFT JOIN`) os filmes com suas respectivas notas (`title_ratings`) para criar a tabela `filmes_com_notas`.
+      * Cruzamos (`INNER JOIN`) os filmes limpos com seus atores e diretores (`principals` e `name_basics`) para criar a tabela `pessoas_do_filme`.
+5.  **Armazenamento:** os resultados foram salvos como duas novas tabelas na Camada Prata.
 
-Siga estes passos na ordem correta para executar o projeto do zero.
+## 4\.  Tabelas Prata 
 
-### 1. Clonar o Repositório
+### Tabela 1: `imdb_prata.filmes_com_notas`
 
-```bash
-git clone [https://github.com/seu-usuario/seu-repositorio.git](https://github.com/seu-usuario/seu-repositorio.git)
-cd seu-repositorio
-```
-### 2. Executando código: 
+  * **Descrição:** tabela central de filmes, limpa e enriquecida com notas.
+  * **Tamanho:** \~365 mil linhas (\~25 MB)
+  * **Colunas Principais:**
+      * `id_filme`: (string) ID único do filme (ex: `tt0133093`).
+      * `titulo_principal`: (string) Título do filme.
+      * `ano_lancamento`: (int) Ano de lançamento.
+      * `duracao_minutos`: (int) Duração (0 se for nulo).
+      * `generos`: (string) Gêneros (ex: 'Action,Sci-Fi').
+      * `nota_media`: (float) Nota de 0 a 10 (pode ser `NULL` se não houver nota).
+      * `num_votos`: (int) Número de votos (pode ser `NULL`).
 
-**Documentação usada**
-https://airflow.apache.org/docs/apache-airflow/stable/howto/docker-compose/index.html
+### Tabela 2: `imdb_prata.pessoas_do_filme`
 
-**Criando ambiente airflow**
-
-*Windows* 
-```bash
-mkdir dags, logs, plugins, config
-```
-
-*Linux*
-```bash
-mkdir -p ./dags ./logs ./plugins ./config
-```
-
-**Adicionar Variavel de ambiente**
-
-*Windows* 
-```bash
-"AIRFLOW_UID=5000" | Out-File -Encoding UTF8 -FilePath .env
-```
-
-*Linux*
-```bash
-echo -e "AIRFLOW_UID=$(id -u)" > .env
-```
-
-**Inicializando arquivo de configurações**
-
-```bash
-docker compose run airflow-cli airflow config list
-```
-
-
-**Instanciando banco de dados e criando conta**
-
-```bash
-docker compose up airflow-init
-```
-
-- Criada a conta Airflow, com login: "airflow" e senha: "airflow"
-
-
-**Rodando Airflow**
-
-```bash
-docker compose up
-```
-
-
-**Reiniciando servidor ao subir alterações**
-
-```bash
-docker compose restart
-```
-
-
-### 4. Iniciar o Banco de Dados (Camada Prata)
-
-Com o Docker Desktop aberto e em execução, inicie o container do PostgreSQL:
-
-```bash
-docker-compose up -d
-```
-
-*O banco de dados agora está rodando em segundo plano.*
-
-
-
-### 5. Utilizando terraform para subir a arquitetura para produção:
-
-```bash
-terraform init --upgrade
-```
-
-```bash
-terraform apply -target=google_artifact_registry_repository.repo
-```
-
-
-```bash
-terraform apply -var="image_tag=tag_da_imagem_docker_artifact_repository"
-```
-
-
-## 📊 Esquema da Camada Prata (Entregável)
-
-O pipeline gera as seguintes tabelas normalizadas, que são exportadas para CSV:
-
-* **`movies`**
-    * `movie_id` (Chave Primária)
-    * `title` (Título)
-    * `release_date_clean` (Data de Lançamento)
-    * `budget_clean` (Orçamento)
-    * `box_office_clean` (Bilheteria)
-    * `director_id` (Chave Estrangeira -> `people.person_id`)
-    * `running_time_min` (Duração em minutos)
-    * `language` (Idioma principal)
-    * `countries_list` (Lista de países)
-    * `production_companies_list` (Lista de produtoras)
-
-* **`people`**
-    * `person_id` (Chave Primária)
-    * `name` (Nome real da pessoa, ex: "Christopher Nolan")
-
-* **`movie_actors`** (Tabela de Junção)
-    * `movie_id` (Chave Estrangeira -> `movies.movie_id`)
-    * `person_id` (Chave Estrangeira -> `people.person_id`)
-
-* **`movie_writers`** (Tabela de Junção)
-    * `movie_id`
-    * `person_id`
-
-* **`movie_composers`** (Tabela de Junção)
-    * `movie_id`
-    * `person_id`
+  * **Descrição:** tabela de mapeamento que conecta filmes aos seus atores e diretores.
+  * **Tamanho:** \~1.6 milhão de linhas (\~84 MB)
+  * **Colunas Principais:**
+      * `id_filme`: (string) ID único do filme (chave para `filmes_com_notas`).
+      * `titulo_principal`: (string) Título do filme (para facilitar a leitura).
+      * `nome_pessoa`: (string) Nome do ator ou diretor.
+      * `categoria`: (string) Função da pessoa ('actor' ou 'director').
