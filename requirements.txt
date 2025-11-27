@@ -1,0 +1,16 @@
+fastapi
+uvicorn[standard]
+requests
+pytz
+mlflow
+pandas
+torch
+transformers
+datasets
+accelerate
+seqeval
+sentencepiece
+scikit-learn
+tqdm
+protobuf
+numpy
