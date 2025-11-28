@@ -32,3 +32,8 @@ variable "image_tag_airflow" {
   description = "A tag da imagem que foi feita o push recentemente"
   type        = string
 }
+
+variable "image_tag_frontend_app" {
+  description = "A tag da imagem que foi feita o push recentemente"
+  type        = string
+}

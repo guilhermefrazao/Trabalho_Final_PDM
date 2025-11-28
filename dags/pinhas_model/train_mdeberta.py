@@ -20,12 +20,14 @@ from tqdm.auto import tqdm
 device = torch.device("cuda" if torch.cuda.is_available() else "cpu")
 print(f"Usando dispositivo: {device}")
 
-# ==============================================================================
-# 2. CONFIGURAÇÃO E CARREGAMENTO
-# ==============================================================================
-TRAIN_FILE = 'data/dataset_v3_train.json'
-VAL_FILE = 'data/dataset_v3_val.json'
-OUTPUT_DIR = "models/modelo_treinado_v3"
+BASE_DIR = os.path.dirname(os.path.abspath(__file__))
+
+# 2. Constrói o caminho completo para a pasta data
+# Resultado: /opt/airflow/dags/repo/dags/pinhas_model/data/dataset_v3_train.json
+TRAIN_FILE = os.path.join(BASE_DIR, 'data', 'dataset_v3_train.json')
+VAL_FILE = os.path.join(BASE_DIR, 'data', 'dataset_v3_val.json')
+OUTPUT_DIR = os.path.join(BASE_DIR, 'models', 'modelo_treinado_v3')
+
 
 # Para comparar com BERTimbau, mude para: "neuralmind/bert-base-portuguese-cased"
 MODEL_NAME = "microsoft/mdeberta-v3-base" 

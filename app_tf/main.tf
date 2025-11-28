@@ -224,3 +224,61 @@ resource "kubernetes_service" "mlflow_service" {
     type = "LoadBalancer"
   }
 }
+
+
+resource "kubernetes_deployment" "frontend_app" {
+  metadata {
+    name = "frontend_app-app"
+    labels = {
+      app = "frontend_app"
+    }
+  }
+
+  spec {
+    replicas = 1
+    selector {
+      match_labels = {
+        app = "frontend_app"
+      }
+    }
+    template {
+      metadata {
+        labels = {
+          app = "frontend_app"
+        }
+      }
+      spec {
+        service_account_name = kubernetes_service_account.ml_app_sa.metadata[0].name
+
+        container {
+          image = "us-central1-docker.pkg.dev/${var.project}/${data.terraform_remote_state.infra.outputs.repo_name}/frontend_app:${var.image_tag_frontend_app}"
+          name  = "frontend_app"
+          port {
+            container_port = 4000
+          }
+
+        env {
+          name  = "AIRFLOW_HOST"
+          value = "airflow-webserver.airflow.svc.cluster.local:4000"
+        }
+        }
+      }
+    }
+  }
+}
+
+resource "kubernetes_service" "frontend_app_service" {
+  metadata {
+    name = "frontend_app-service"
+  }
+  spec {
+    selector = {
+      app = "frontend_app"
+    }
+    port {
+      port        = 80
+      target_port = 4000
+    }
+    type = "LoadBalancer"
+  }
+}
