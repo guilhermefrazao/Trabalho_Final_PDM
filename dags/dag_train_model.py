@@ -5,7 +5,7 @@ from airflow.operators.python import PythonOperator
 import logging 
 from datetime import datetime
 
-from ..pinhas_model.train_mdeberta import run_training_pipeline
+from pinhas_model.train_mdeberta import run_training_pipeline
 
 
 MLFLOW_URI = "http://mlflow-service.default.svc.cluster.local"

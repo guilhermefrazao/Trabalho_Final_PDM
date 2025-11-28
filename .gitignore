@@ -73,3 +73,5 @@ infra_tf/.terraform.lock.hcl
 .env
 TODO.md
 /pinhas_model/models
+/dags/pinhas_model/models
+/dags/pinhas_model/data
