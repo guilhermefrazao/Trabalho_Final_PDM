@@ -105,6 +105,7 @@ with DAG(
         executor_config={
         "pod_override": k8s.V1Pod(
             spec=k8s.V1PodSpec(
+                service_account_name="airflow-sa",
                 containers=[
                     k8s.V1Container(
                         name="base",
