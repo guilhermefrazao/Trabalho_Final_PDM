@@ -82,7 +82,7 @@ def run_training_pipeline(epochs=1):
     BASE_DIR = os.path.dirname(os.path.abspath(__file__))
     TRAIN_FILE = os.path.join(BASE_DIR, 'data', 'dataset_v3_train.json')
     VAL_FILE = os.path.join(BASE_DIR, 'data', 'dataset_v3_val.json')
-    OUTPUT_DIR = os.path.join(BASE_DIR, 'models', 'modelo_treinado_v3')
+    OUTPUT_DIR = "/tmp/modelo_treinado_v3"
     MODEL_NAME = "microsoft/mdeberta-v3-base"
 
     # ==========================================================================
@@ -164,7 +164,7 @@ def run_training_pipeline(epochs=1):
         return acc, f1_int, f1_ner
 
     def save_model_complete(model, tokenizer, output_dir, intent2id, tag2id):
-        if not os.path.exists(output_dir): os.makedirs(output_dir)
+
         torch.save(model.state_dict(), f"{output_dir}/model_weights.bin")
         tokenizer.save_pretrained(output_dir)
         config_data = {

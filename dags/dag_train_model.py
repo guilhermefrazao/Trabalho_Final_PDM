@@ -11,7 +11,7 @@ from pinhas_model.train_mdeberta import run_training_pipeline
 
 BASE_DIR = os.path.dirname(os.path.abspath(__file__))
 
-OUTPUT_DIR = os.path.join(BASE_DIR, 'pinhas_model', 'models', 'modelo_treinado_v3')
+OUTPUT_DIR = "/tmp/modelo_treinado_v3"
 
 
 MLFLOW_URI = "http://mlflow-service.default.svc.cluster.local"
