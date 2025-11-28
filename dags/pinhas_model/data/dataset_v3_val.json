@@ -1,0 +1,1316 @@
+[
+  {
+    "text": "Quantos votantes, em média, filmes de Ficção Científica Espacial possuem?",
+    "intent": "quantidade_de_votos_para_filmes_de_genero_x",
+    "entities": [
+      {
+        "entity": "GENERO",
+        "value": "Ficção Científica Espacial",
+        "start": 38,
+        "end": 64
+      }
+    ]
+  },
+  {
+    "text": "Qual a nota média do filme 'Entre Dois Amores'.",
+    "intent": "nota_media_de_um_filme_x",
+    "entities": [
+      {
+        "entity": "FILME",
+        "value": "Entre Dois Amores",
+        "start": 28,
+        "end": 45
+      }
+    ]
+  },
+  {
+    "text": "Quantos minutos o filme 'Laranja Mecânica' tem?",
+    "intent": "duracao_de_um_filme_x",
+    "entities": [
+      {
+        "entity": "FILME",
+        "value": "Laranja Mecânica",
+        "start": 25,
+        "end": 41
+      }
+    ]
+  },
+  {
+    "text": "Quais são os principais filmes do gênero Drama Familiar?",
+    "intent": "filmes_de_um_genero_x",
+    "entities": [
+      {
+        "entity": "GENERO",
+        "value": "Drama Familiar",
+        "start": 41,
+        "end": 55
+      }
+    ]
+  },
+  {
+    "text": "Quais são os atores principais de 'Guerra Civil' (2024)?",
+    "intent": "atores_de_um_filme_x",
+    "entities": [
+      {
+        "entity": "FILME",
+        "value": "Guerra Civil",
+        "start": 35,
+        "end": 47
+      }
+    ]
+  },
+  {
+    "text": "Quem compõe o elenco principal do longa 'O Discurso do Rei'?",
+    "intent": "atores_de_um_filme_x",
+    "entities": [
+      {
+        "entity": "FILME",
+        "value": "O Discurso do Rei",
+        "start": 41,
+        "end": 58
+      }
+    ]
+  },
+  {
+    "text": "Qual a nota média do filme 'Conduzindo Miss Daisy'.",
+    "intent": "nota_media_de_um_filme_x",
+    "entities": [
+      {
+        "entity": "FILME",
+        "value": "Conduzindo Miss Daisy",
+        "start": 28,
+        "end": 49
+      }
+    ]
+  },
+  {
+    "text": "Liste os filmes do gênero Drama e Romance.",
+    "intent": "filmes_de_um_genero_x",
+    "entities": [
+      {
+        "entity": "GENERO",
+        "value": "Drama e Romance",
+        "start": 26,
+        "end": 41
+      }
+    ]
+  },
+  {
+    "text": "Poderia me informar o gênero de 'O Iluminado'.",
+    "intent": "genero_de_um_filme_x",
+    "entities": [
+      {
+        "entity": "FILME",
+        "value": "O Iluminado",
+        "start": 33,
+        "end": 44
+      }
+    ]
+  },
+  {
+    "text": "Em qual gênero está situado o filme 'Hannah e Suas Irmãs'?",
+    "intent": "genero_de_um_filme_x",
+    "entities": [
+      {
+        "entity": "FILME",
+        "value": "Hannah e Suas Irmãs",
+        "start": 37,
+        "end": 56
+      }
+    ]
+  },
+  {
+    "text": "Qual o total de votos registrados para o filme 'Interestelar'?",
+    "intent": "numero_de_votos_de_um_filme_x",
+    "entities": [
+      {
+        "entity": "FILME",
+        "value": "Interestelar",
+        "start": 48,
+        "end": 60
+      }
+    ]
+  },
+  {
+    "text": "Relação de filmes em que Robert Downey Jr. esteve no elenco.",
+    "intent": "filmes_que_um_ator_x_participou",
+    "entities": [
+      {
+        "entity": "ATOR",
+        "value": "Robert Downey Jr.",
+        "start": 25,
+        "end": 42
+      }
+    ]
+  },
+  {
+    "text": "Quantos minutos tem 'Dançando com Lobos'?",
+    "intent": "duracao_de_um_filme_x",
+    "entities": [
+      {
+        "entity": "FILME",
+        "value": "Dançando com Lobos",
+        "start": 21,
+        "end": 39
+      }
+    ]
+  },
+  {
+    "text": "Quantos votantes, em média, filmes de Super-Heróis possuem?",
+    "intent": "quantidade_de_votos_para_filmes_de_genero_x",
+    "entities": [
+      {
+        "entity": "GENERO",
+        "value": "Super-Heróis",
+        "start": 38,
+        "end": 50
+      }
+    ]
+  },
+  {
+    "text": "Gostaria de saber a avaliação de 'O Artista'.",
+    "intent": "nota_media_de_um_filme_x",
+    "entities": [
+      {
+        "entity": "FILME",
+        "value": "O Artista",
+        "start": 34,
+        "end": 43
+      }
+    ]
+  },
+  {
+    "text": "Eu preciso saber o tempo de projeção de 'Disque M para Matar'.",
+    "intent": "duracao_de_um_filme_x",
+    "entities": [
+      {
+        "entity": "FILME",
+        "value": "Disque M para Matar",
+        "start": 41,
+        "end": 60
+      }
+    ]
+  },
+  {
+    "text": "Quais filmes se enquadram na categoria Artes Marciais?",
+    "intent": "filmes_de_um_genero_x",
+    "entities": [
+      {
+        "entity": "GENERO",
+        "value": "Artes Marciais",
+        "start": 39,
+        "end": 53
+      }
+    ]
+  },
+  {
+    "text": "Quais são os artistas escalados para 'Volta ao Mundo em 80 Dias'.",
+    "intent": "atores_de_um_filme_x",
+    "entities": [
+      {
+        "entity": "FILME",
+        "value": "Volta ao Mundo em 80 Dias",
+        "start": 38,
+        "end": 63
+      }
+    ]
+  },
+  {
+    "text": "Qual o gênero cinematográfico de 'Tubarão'?",
+    "intent": "genero_de_um_filme_x",
+    "entities": [
+      {
+        "entity": "FILME",
+        "value": "Tubarão",
+        "start": 34,
+        "end": 41
+      }
+    ]
+  },
+  {
+    "text": "Poderia listar os atores que atuaram em 'Whiplash: Em Busca da Perfeição'?",
+    "intent": "atores_de_um_filme_x",
+    "entities": [
+      {
+        "entity": "FILME",
+        "value": "Whiplash: Em Busca da Perfeição",
+        "start": 41,
+        "end": 72
+      }
+    ]
+  },
+  {
+    "text": "Qual a categoria principal do filme 'Uma Mente Brilhante'?",
+    "intent": "genero_de_um_filme_x",
+    "entities": [
+      {
+        "entity": "FILME",
+        "value": "Uma Mente Brilhante",
+        "start": 37,
+        "end": 56
+      }
+    ]
+  },
+  {
+    "text": "Qual o total de votos para a categoria Terror Psicológico?",
+    "intent": "quantidade_de_votos_para_filmes_de_genero_x",
+    "entities": [
+      {
+        "entity": "GENERO",
+        "value": "Terror Psicológico",
+        "start": 39,
+        "end": 57
+      }
+    ]
+  },
+  {
+    "text": "Poderia listar filmes de Ação?",
+    "intent": "filmes_de_um_genero_x",
+    "entities": [
+      {
+        "entity": "GENERO",
+        "value": "Ação",
+        "start": 25,
+        "end": 29
+      }
+    ]
+  },
+  {
+    "text": "Liste os filmes do gênero Suspense Jurídico.",
+    "intent": "filmes_de_um_genero_x",
+    "entities": [
+      {
+        "entity": "GENERO",
+        "value": "Suspense Jurídico",
+        "start": 26,
+        "end": 43
+      }
+    ]
+  },
+  {
+    "text": "Quais são os atores principais de 'A Um Passo da Eternidade'.",
+    "intent": "atores_de_um_filme_x",
+    "entities": [
+      {
+        "entity": "FILME",
+        "value": "A Um Passo da Eternidade",
+        "start": 35,
+        "end": 59
+      }
+    ]
+  },
+  {
+    "text": "Qual o gênero do filme 'Drive'?",
+    "intent": "genero_de_um_filme_x",
+    "entities": [
+      {
+        "entity": "FILME",
+        "value": "Drive",
+        "start": 24,
+        "end": 29
+      }
+    ]
+  },
+  {
+    "text": "Quais produções são de 2002?",
+    "intent": "filmes_de_um_ano_x",
+    "entities": [
+      {
+        "entity": "ANO",
+        "value": "2002",
+        "start": 23,
+        "end": 27
+      }
+    ]
+  },
+  {
+    "text": "Qual a quantidade de votos que os filmes de Mistério Clássico recebem?",
+    "intent": "quantidade_de_votos_para_filmes_de_genero_x",
+    "entities": [
+      {
+        "entity": "GENERO",
+        "value": "Mistério Clássico",
+        "start": 44,
+        "end": 61
+      }
+    ]
+  },
+  {
+    "text": "Poderia me dizer o tempo de projeção de 'Platoon'.",
+    "intent": "duracao_de_um_filme_x",
+    "entities": [
+      {
+        "entity": "FILME",
+        "value": "Platoon",
+        "start": 41,
+        "end": 48
+      }
+    ]
+  },
+  {
+    "text": "Poderia me informar a pontuação média para o gênero Comédia de Erros?",
+    "intent": "nota_media_para_filmes_de_genero_x",
+    "entities": [
+      {
+        "entity": "GENERO",
+        "value": "Comédia de Erros",
+        "start": 52,
+        "end": 68
+      }
+    ]
+  },
+  {
+    "text": "Liste as obras com rating inferior a 6.6.",
+    "intent": "filmes_com_nota_maior_menor_ou_igual_a_y",
+    "entities": [
+      {
+        "entity": "OPERADOR",
+        "value": "inferior a",
+        "start": 26,
+        "end": 36
+      },
+      {
+        "entity": "NOTA",
+        "value": "6.6",
+        "start": 37,
+        "end": 40
+      }
+    ]
+  },
+  {
+    "text": "Quem compõe o elenco principal do longa 'O Senhor dos Anéis: A Sociedade do Anel'?",
+    "intent": "atores_de_um_filme_x",
+    "entities": [
+      {
+        "entity": "FILME",
+        "value": "O Senhor dos Anéis: A Sociedade do Anel",
+        "start": 41,
+        "end": 80
+      }
+    ]
+  },
+  {
+    "text": "Informe o número total de avaliações para o gênero Documentário e Natureza.",
+    "intent": "quantidade_de_votos_para_filmes_de_genero_x",
+    "entities": [
+      {
+        "entity": "GENERO",
+        "value": "Documentário e Natureza",
+        "start": 51,
+        "end": 74
+      }
+    ]
+  },
+  {
+    "text": "Qual a nota média do filme 'Guerra ao Terror'?",
+    "intent": "nota_media_de_um_filme_x",
+    "entities": [
+      {
+        "entity": "FILME",
+        "value": "Guerra ao Terror",
+        "start": 28,
+        "end": 44
+      }
+    ]
+  },
+  {
+    "text": "Informe o número médio de avaliações em filmes de Drama.",
+    "intent": "quantidade_de_votos_para_filmes_de_genero_x",
+    "entities": [
+      {
+        "entity": "GENERO",
+        "value": "Drama",
+        "start": 50,
+        "end": 55
+      }
+    ]
+  },
+  {
+    "text": "Quais são os atores principais de 'Joker'?",
+    "intent": "atores_de_um_filme_x",
+    "entities": [
+      {
+        "entity": "FILME",
+        "value": "Joker",
+        "start": 35,
+        "end": 40
+      }
+    ]
+  },
+  {
+    "text": "Preciso de sugestões de filmes de Aventura.",
+    "intent": "filmes_de_um_genero_x",
+    "entities": [
+      {
+        "entity": "GENERO",
+        "value": "Aventura",
+        "start": 34,
+        "end": 42
+      }
+    ]
+  },
+  {
+    "text": "Preciso de filmes que não atinjam 18 mil avaliações.",
+    "intent": "filmes_com_numero_de_votos_maior_menor_ou_igual_a_y",
+    "entities": [
+      {
+        "entity": "OPERADOR",
+        "value": "não atinjam",
+        "start": 22,
+        "end": 33
+      },
+      {
+        "entity": "VOTOS",
+        "value": "18 mil avaliações",
+        "start": 34,
+        "end": 51
+      }
+    ]
+  },
+  {
+    "text": "Eu preciso saber o número de votos do filme 'Carruagens de Fogo'.",
+    "intent": "numero_de_votos_de_um_filme_x",
+    "entities": [
+      {
+        "entity": "FILME",
+        "value": "Carruagens de Fogo",
+        "start": 45,
+        "end": 63
+      }
+    ]
+  },
+  {
+    "text": "Gostaria de títulos com avaliação menor que 5.0.",
+    "intent": "filmes_com_nota_maior_menor_ou_igual_a_y",
+    "entities": [
+      {
+        "entity": "OPERADOR",
+        "value": "menor que",
+        "start": 34,
+        "end": 43
+      },
+      {
+        "entity": "NOTA",
+        "value": "5.0",
+        "start": 44,
+        "end": 47
+      }
+    ]
+  },
+  {
+    "text": "Qual a nota média dos filmes de Ação?",
+    "intent": "nota_media_para_filmes_de_genero_x",
+    "entities": [
+      {
+        "entity": "GENERO",
+        "value": "Ação",
+        "start": 32,
+        "end": 36
+      }
+    ]
+  },
+  {
+    "text": "Liste os filmes com a participação de Awkwafina.",
+    "intent": "filmes_que_um_ator_x_participou",
+    "entities": [
+      {
+        "entity": "ATOR",
+        "value": "Awkwafina",
+        "start": 38,
+        "end": 47
+      }
+    ]
+  },
+  {
+    "text": "Informe a quantidade de pessoas que votaram em 'Joker'.",
+    "intent": "numero_de_votos_de_um_filme_x",
+    "entities": [
+      {
+        "entity": "FILME",
+        "value": "Joker",
+        "start": 48,
+        "end": 53
+      }
+    ]
+  },
+  {
+    "text": "Qual a avaliação média do filme 'O Poderoso Chefão'?",
+    "intent": "nota_media_de_um_filme_x",
+    "entities": [
+      {
+        "entity": "FILME",
+        "value": "O Poderoso Chefão",
+        "start": 33,
+        "end": 50
+      }
+    ]
+  },
+  {
+    "text": "Qual o rating que o longa-metragem 'Argo' obteve?",
+    "intent": "nota_media_de_um_filme_x",
+    "entities": [
+      {
+        "entity": "FILME",
+        "value": "Argo",
+        "start": 36,
+        "end": 40
+      }
+    ]
+  },
+  {
+    "text": "Gostaria de saber a avaliação média do público para filmes de Artes Marciais.",
+    "intent": "nota_media_para_filmes_de_genero_x",
+    "entities": [
+      {
+        "entity": "GENERO",
+        "value": "Artes Marciais",
+        "start": 62,
+        "end": 76
+      }
+    ]
+  },
+  {
+    "text": "Quero longas com 7.6 de nota.",
+    "intent": "filmes_com_nota_maior_menor_ou_igual_a_y",
+    "entities": [
+      {
+        "entity": "NOTA",
+        "value": "7.6",
+        "start": 17,
+        "end": 20
+      }
+    ]
+  },
+  {
+    "text": "Preciso saber os filmes em que Florence Kasumba participou.",
+    "intent": "filmes_que_um_ator_x_participou",
+    "entities": [
+      {
+        "entity": "ATOR",
+        "value": "Florence Kasumba",
+        "start": 31,
+        "end": 47
+      }
+    ]
+  },
+  {
+    "text": "Qual a classificação de gênero para 'Quem Quer Ser um Milionário?'?",
+    "intent": "genero_de_um_filme_x",
+    "entities": [
+      {
+        "entity": "FILME",
+        "value": "Quem Quer Ser um Milionário?",
+        "start": 37,
+        "end": 65
+      }
+    ]
+  },
+  {
+    "text": "Qual o rating que o longa-metragem 'Rocky, um Lutador' obteve?",
+    "intent": "nota_media_de_um_filme_x",
+    "entities": [
+      {
+        "entity": "FILME",
+        "value": "Rocky, um Lutador",
+        "start": 36,
+        "end": 53
+      }
+    ]
+  },
+  {
+    "text": "Gostaria de saber a avaliação de 'Gladiador'.",
+    "intent": "nota_media_de_um_filme_x",
+    "entities": [
+      {
+        "entity": "FILME",
+        "value": "Gladiador",
+        "start": 34,
+        "end": 43
+      }
+    ]
+  },
+  {
+    "text": "Poderia me indicar filmes com 103 minutos.",
+    "intent": "filmes_com_duracao_maior_menor_ou_igual_a_y",
+    "entities": [
+      {
+        "entity": "DURACAO",
+        "value": "103",
+        "start": 30,
+        "end": 33
+      }
+    ]
+  },
+  {
+    "text": "Eu preciso saber o número de votos do filme 'O Silêncio dos Inocentes'.",
+    "intent": "numero_de_votos_de_um_filme_x",
+    "entities": [
+      {
+        "entity": "FILME",
+        "value": "O Silêncio dos Inocentes",
+        "start": 45,
+        "end": 69
+      }
+    ]
+  },
+  {
+    "text": "Qual o rating que o longa-metragem 'Whiplash: Em Busca da Perfeição' obteve?",
+    "intent": "nota_media_de_um_filme_x",
+    "entities": [
+      {
+        "entity": "FILME",
+        "value": "Whiplash: Em Busca da Perfeição",
+        "start": 36,
+        "end": 67
+      }
+    ]
+  },
+  {
+    "text": "Qual a duração de 'Tubarão'?",
+    "intent": "duracao_de_um_filme_x",
+    "entities": [
+      {
+        "entity": "FILME",
+        "value": "Tubarão",
+        "start": 19,
+        "end": 26
+      }
+    ]
+  },
+  {
+    "text": "Liste as obras com menos de 65 minutos.",
+    "intent": "filmes_com_duracao_maior_menor_ou_igual_a_y",
+    "entities": [
+      {
+        "entity": "OPERADOR",
+        "value": "menos de",
+        "start": 19,
+        "end": 27
+      },
+      {
+        "entity": "DURACAO",
+        "value": "65",
+        "start": 28,
+        "end": 30
+      }
+    ]
+  },
+  {
+    "text": "Quantos votos o filme 'As Vinhas da Ira' recebeu?",
+    "intent": "numero_de_votos_de_um_filme_x",
+    "entities": [
+      {
+        "entity": "FILME",
+        "value": "As Vinhas da Ira",
+        "start": 23,
+        "end": 39
+      }
+    ]
+  },
+  {
+    "text": "Quantas pessoas avaliaram o filme 'Três Homens em Conflito'?",
+    "intent": "numero_de_votos_de_um_filme_x",
+    "entities": [
+      {
+        "entity": "FILME",
+        "value": "Três Homens em Conflito",
+        "start": 35,
+        "end": 58
+      }
+    ]
+  },
+  {
+    "text": "Qual o gênero cinematográfico de 'Intriga Internacional'?",
+    "intent": "genero_de_um_filme_x",
+    "entities": [
+      {
+        "entity": "FILME",
+        "value": "Intriga Internacional",
+        "start": 34,
+        "end": 55
+      }
+    ]
+  },
+  {
+    "text": "Poderia me dizer o tempo de projeção de 'Clube da Luta'?",
+    "intent": "duracao_de_um_filme_x",
+    "entities": [
+      {
+        "entity": "FILME",
+        "value": "Clube da Luta",
+        "start": 41,
+        "end": 54
+      }
+    ]
+  },
+  {
+    "text": "Informe o número total de votantes do filme 'Barbie'.",
+    "intent": "numero_de_votos_de_um_filme_x",
+    "entities": [
+      {
+        "entity": "FILME",
+        "value": "Barbie",
+        "start": 45,
+        "end": 51
+      }
+    ]
+  },
+  {
+    "text": "Quais obras cinematográficas são do gênero Épico Histórico?",
+    "intent": "filmes_de_um_genero_x",
+    "entities": [
+      {
+        "entity": "GENERO",
+        "value": "Épico Histórico",
+        "start": 43,
+        "end": 58
+      }
+    ]
+  },
+  {
+    "text": "Liste os longas-metragens em que Tom Hanks atuou.",
+    "intent": "filmes_que_um_ator_x_participou",
+    "entities": [
+      {
+        "entity": "ATOR",
+        "value": "Tom Hanks",
+        "start": 33,
+        "end": 42
+      }
+    ]
+  },
+  {
+    "text": "Qual o rating que o longa-metragem 'V de Vingança' obteve?",
+    "intent": "nota_media_de_um_filme_x",
+    "entities": [
+      {
+        "entity": "FILME",
+        "value": "V de Vingança",
+        "start": 36,
+        "end": 49
+      }
+    ]
+  },
+  {
+    "text": "Quem compõe o elenco principal do longa 'Gladiador'?",
+    "intent": "atores_de_um_filme_x",
+    "entities": [
+      {
+        "entity": "FILME",
+        "value": "Gladiador",
+        "start": 41,
+        "end": 50
+      }
+    ]
+  },
+  {
+    "text": "Qual o período de exibição de 'Os Sete Samurais'?",
+    "intent": "duracao_de_um_filme_x",
+    "entities": [
+      {
+        "entity": "FILME",
+        "value": "Os Sete Samurais",
+        "start": 31,
+        "end": 47
+      }
+    ]
+  },
+  {
+    "text": "Gostaria de saber a avaliação média do público para filmes Épicos.",
+    "intent": "nota_media_para_filmes_de_genero_x",
+    "entities": [
+      {
+        "entity": "GENERO",
+        "value": "Épicos",
+        "start": 59,
+        "end": 65
+      }
+    ]
+  },
+  {
+    "text": "Poderia listar os atores que atuaram em 'Parasita'?",
+    "intent": "atores_de_um_filme_x",
+    "entities": [
+      {
+        "entity": "FILME",
+        "value": "Parasita",
+        "start": 41,
+        "end": 49
+      }
+    ]
+  },
+  {
+    "text": "Poderia me informar a pontuação média para o gênero Fantasia Sombria?",
+    "intent": "nota_media_para_filmes_de_genero_x",
+    "entities": [
+      {
+        "entity": "GENERO",
+        "value": "Fantasia Sombria",
+        "start": 52,
+        "end": 68
+      }
+    ]
+  },
+  {
+    "text": "Quais obras cinematográficas são estreladas por Morgan Freeman?",
+    "intent": "filmes_que_um_ator_x_participou",
+    "entities": [
+      {
+        "entity": "ATOR",
+        "value": "Morgan Freeman",
+        "start": 48,
+        "end": 62
+      }
+    ]
+  },
+  {
+    "text": "Informe o número médio de avaliações em filmes de Ação Militar.",
+    "intent": "quantidade_de_votos_para_filmes_de_genero_x",
+    "entities": [
+      {
+        "entity": "GENERO",
+        "value": "Ação Militar",
+        "start": 50,
+        "end": 62
+      }
+    ]
+  },
+  {
+    "text": "Gostaria de saber a nota de 'O Maior Espetáculo da Terra'.",
+    "intent": "nota_media_de_um_filme_x",
+    "entities": [
+      {
+        "entity": "FILME",
+        "value": "O Maior Espetáculo da Terra",
+        "start": 29,
+        "end": 56
+      }
+    ]
+  },
+  {
+    "text": "Poderia me informar a pontuação média para o gênero Drama Familiar.",
+    "intent": "nota_media_para_filmes_de_genero_x",
+    "entities": [
+      {
+        "entity": "GENERO",
+        "value": "Drama Familiar",
+        "start": 52,
+        "end": 66
+      }
+    ]
+  },
+  {
+    "text": "Informe os nomes dos artistas que participaram de 'O Maior Espetáculo da Terra'.",
+    "intent": "atores_de_um_filme_x",
+    "entities": [
+      {
+        "entity": "FILME",
+        "value": "O Maior Espetáculo da Terra",
+        "start": 51,
+        "end": 78
+      }
+    ]
+  },
+  {
+    "text": "Quantos votantes, em média, filmes Policiais possuem?",
+    "intent": "quantidade_de_votos_para_filmes_de_genero_x",
+    "entities": [
+      {
+        "entity": "GENERO",
+        "value": "Policiais",
+        "start": 35,
+        "end": 44
+      }
+    ]
+  },
+  {
+    "text": "Quero longas com 122 minutos.",
+    "intent": "filmes_com_duracao_maior_menor_ou_igual_a_y",
+    "entities": [
+      {
+        "entity": "DURACAO",
+        "value": "122",
+        "start": 17,
+        "end": 20
+      }
+    ]
+  },
+  {
+    "text": "Qual a nota média do filme 'Parasita'?",
+    "intent": "nota_media_de_um_filme_x",
+    "entities": [
+      {
+        "entity": "FILME",
+        "value": "Parasita",
+        "start": 28,
+        "end": 36
+      }
+    ]
+  },
+  {
+    "text": "Quantos votos, em média, os filmes de Drama de Tribunal obtêm?",
+    "intent": "quantidade_de_votos_para_filmes_de_genero_x",
+    "entities": [
+      {
+        "entity": "GENERO",
+        "value": "Drama de Tribunal",
+        "start": 38,
+        "end": 55
+      }
+    ]
+  },
+  {
+    "text": "Gostaria de títulos com nota acima de 8.8.",
+    "intent": "filmes_com_nota_maior_menor_ou_igual_a_y",
+    "entities": [
+      {
+        "entity": "OPERADOR",
+        "value": "acima de",
+        "start": 29,
+        "end": 37
+      },
+      {
+        "entity": "NOTA",
+        "value": "8.8",
+        "start": 38,
+        "end": 41
+      }
+    ]
+  },
+  {
+    "text": "Quantos minutos durou a sessão do filme 'Toy Story'?",
+    "intent": "duracao_de_um_filme_x",
+    "entities": [
+      {
+        "entity": "FILME",
+        "value": "Toy Story",
+        "start": 41,
+        "end": 50
+      }
+    ]
+  },
+  {
+    "text": "Qual o total de votos registrados para o filme 'O Senhor dos Anéis: O Retorno do Rei'?",
+    "intent": "numero_de_votos_de_um_filme_x",
+    "entities": [
+      {
+        "entity": "FILME",
+        "value": "O Senhor dos Anéis: O Retorno do Rei",
+        "start": 48,
+        "end": 84
+      }
+    ]
+  },
+  {
+    "text": "Liste as produções cinematográficas de 2024.",
+    "intent": "filmes_de_um_ano_x",
+    "entities": [
+      {
+        "entity": "ANO",
+        "value": "2024",
+        "start": 39,
+        "end": 43
+      }
+    ]
+  },
+  {
+    "text": "Quem está no elenco do filme 'Nomadland'?",
+    "intent": "atores_de_um_filme_x",
+    "entities": [
+      {
+        "entity": "FILME",
+        "value": "Nomadland",
+        "start": 30,
+        "end": 39
+      }
+    ]
+  },
+  {
+    "text": "Quantos minutos o filme 'Tudo em Todo Lugar ao Mesmo Tempo' possui?",
+    "intent": "duracao_de_um_filme_x",
+    "entities": [
+      {
+        "entity": "FILME",
+        "value": "Tudo em Todo Lugar ao Mesmo Tempo",
+        "start": 25,
+        "end": 58
+      }
+    ]
+  },
+  {
+    "text": "Gostaria de saber a avaliação média do público para filmes de Viagem no Tempo.",
+    "intent": "nota_media_para_filmes_de_genero_x",
+    "entities": [
+      {
+        "entity": "GENERO",
+        "value": "Viagem no Tempo",
+        "start": 62,
+        "end": 77
+      }
+    ]
+  },
+  {
+    "text": "Poderia me informar o tempo de execução de 'Ben-Hur'?",
+    "intent": "duracao_de_um_filme_x",
+    "entities": [
+      {
+        "entity": "FILME",
+        "value": "Ben-Hur",
+        "start": 44,
+        "end": 51
+      }
+    ]
+  },
+  {
+    "text": "Filmes que foram ao ar pela primeira vez em 2014.",
+    "intent": "filmes_de_um_ano_x",
+    "entities": [
+      {
+        "entity": "ANO",
+        "value": "2014",
+        "start": 44,
+        "end": 48
+      }
+    ]
+  },
+  {
+    "text": "Poderia me informar a pontuação média para o gênero Comédia Satírica.",
+    "intent": "nota_media_para_filmes_de_genero_x",
+    "entities": [
+      {
+        "entity": "GENERO",
+        "value": "Comédia Satírica",
+        "start": 52,
+        "end": 68
+      }
+    ]
+  },
+  {
+    "text": "Liste os filmes com a participação de Naomi Watts.",
+    "intent": "filmes_que_um_ator_x_participou",
+    "entities": [
+      {
+        "entity": "ATOR",
+        "value": "Naomi Watts",
+        "start": 38,
+        "end": 49
+      }
+    ]
+  },
+  {
+    "text": "Poderia me indicar títulos com duração superior a 150 minutos?",
+    "intent": "filmes_com_duracao_maior_menor_ou_igual_a_y",
+    "entities": [
+      {
+        "entity": "OPERADOR",
+        "value": "superior a",
+        "start": 39,
+        "end": 49
+      },
+      {
+        "entity": "DURACAO",
+        "value": "150",
+        "start": 50,
+        "end": 53
+      }
+    ]
+  },
+  {
+    "text": "Poderia me informar o gênero de 'O Encouraçado Potemkin'.",
+    "intent": "genero_de_um_filme_x",
+    "entities": [
+      {
+        "entity": "FILME",
+        "value": "O Encouraçado Potemkin",
+        "start": 33,
+        "end": 55
+      }
+    ]
+  },
+  {
+    "text": "Qual o gênero cinematográfico de 'Birdman ou (A Inesperada Virtude da Ignorância)'?",
+    "intent": "genero_de_um_filme_x",
+    "entities": [
+      {
+        "entity": "FILME",
+        "value": "Birdman ou (A Inesperada Virtude da Ignorância)",
+        "start": 34,
+        "end": 81
+      }
+    ]
+  },
+  {
+    "text": "Qual o gênero cinematográfico de 'Pocahontas' (1995)?",
+    "intent": "genero_de_um_filme_x",
+    "entities": [
+      {
+        "entity": "FILME",
+        "value": "Pocahontas' (1995",
+        "start": 34,
+        "end": 51
+      }
+    ]
+  },
+  {
+    "text": "Informe o número médio de avaliações em filmes de Ação e Ficção Científica.",
+    "intent": "quantidade_de_votos_para_filmes_de_genero_x",
+    "entities": [
+      {
+        "entity": "GENERO",
+        "value": "Ação e Ficção Científica",
+        "start": 50,
+        "end": 74
+      }
+    ]
+  },
+  {
+    "text": "Informe a quantidade de pessoas que votaram em 'O Iluminado'.",
+    "intent": "numero_de_votos_de_um_filme_x",
+    "entities": [
+      {
+        "entity": "FILME",
+        "value": "O Iluminado",
+        "start": 48,
+        "end": 59
+      }
+    ]
+  },
+  {
+    "text": "Qual a lista de filmes de Keanu Reeves?",
+    "intent": "filmes_que_um_ator_x_participou",
+    "entities": [
+      {
+        "entity": "ATOR",
+        "value": "Keanu Reeves",
+        "start": 26,
+        "end": 38
+      }
+    ]
+  },
+  {
+    "text": "Quais obras possuem menos de 9 mil avaliações?",
+    "intent": "filmes_com_numero_de_votos_maior_menor_ou_igual_a_y",
+    "entities": [
+      {
+        "entity": "OPERADOR",
+        "value": "menos de",
+        "start": 20,
+        "end": 28
+      },
+      {
+        "entity": "VOTOS",
+        "value": "9 mil avaliações",
+        "start": 29,
+        "end": 45
+      }
+    ]
+  },
+  {
+    "text": "Quantos votantes, em média, filmes Épicos possuem?",
+    "intent": "quantidade_de_votos_para_filmes_de_genero_x",
+    "entities": [
+      {
+        "entity": "GENERO",
+        "value": "Épicos",
+        "start": 35,
+        "end": 41
+      }
+    ]
+  },
+  {
+    "text": "Gostaria de saber a nota de 'Onde os Fracos Não Têm Vez'.",
+    "intent": "nota_media_de_um_filme_x",
+    "entities": [
+      {
+        "entity": "FILME",
+        "value": "Onde os Fracos Não Têm Vez",
+        "start": 29,
+        "end": 55
+      }
+    ]
+  },
+  {
+    "text": "Qual o número total de avaliações para 'O Discurso do Rei'?",
+    "intent": "numero_de_votos_de_um_filme_x",
+    "entities": [
+      {
+        "entity": "FILME",
+        "value": "O Discurso do Rei",
+        "start": 40,
+        "end": 57
+      }
+    ]
+  },
+  {
+    "text": "Poderia fornecer o tempo de execução de 'Duna' (2021).",
+    "intent": "duracao_de_um_filme_x",
+    "entities": [
+      {
+        "entity": "FILME",
+        "value": "Duna",
+        "start": 41,
+        "end": 45
+      }
+    ]
+  },
+  {
+    "text": "Gostaria de saber a avaliação de filmes de Espionagem.",
+    "intent": "nota_media_para_filmes_de_genero_x",
+    "entities": [
+      {
+        "entity": "GENERO",
+        "value": "Espionagem",
+        "start": 43,
+        "end": 53
+      }
+    ]
+  },
+  {
+    "text": "Qual o número total de avaliações para 'Rebecca, a Mulher Inesquecível'?",
+    "intent": "numero_de_votos_de_um_filme_x",
+    "entities": [
+      {
+        "entity": "FILME",
+        "value": "Rebecca, a Mulher Inesquecível",
+        "start": 40,
+        "end": 70
+      }
+    ]
+  },
+  {
+    "text": "Qual a categoria principal do filme 'A Rede Social'?",
+    "intent": "genero_de_um_filme_x",
+    "entities": [
+      {
+        "entity": "FILME",
+        "value": "A Rede Social",
+        "start": 37,
+        "end": 50
+      }
+    ]
+  },
+  {
+    "text": "Relação de obras cinematográficas do gênero Comédia de Erros.",
+    "intent": "filmes_de_um_genero_x",
+    "entities": [
+      {
+        "entity": "GENERO",
+        "value": "Comédia de Erros",
+        "start": 44,
+        "end": 60
+      }
+    ]
+  },
+  {
+    "text": "Qual a classificação da obra 'O Quarto de Jack'?",
+    "intent": "genero_de_um_filme_x",
+    "entities": [
+      {
+        "entity": "FILME",
+        "value": "O Quarto de Jack",
+        "start": 30,
+        "end": 46
+      }
+    ]
+  }
+]
