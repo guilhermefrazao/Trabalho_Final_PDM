@@ -23,9 +23,9 @@ print(f"Usando dispositivo: {device}")
 # ==============================================================================
 # 2. CONFIGURAÇÃO E CARREGAMENTO
 # ==============================================================================
-TRAIN_FILE = 'pinhas_model/data/dataset_v3_train.json'
-VAL_FILE = 'pinhas_model/data/dataset_v3_val.json'
-OUTPUT_DIR = "./pinhas_model/models/modelo_treinado_v3"
+TRAIN_FILE = 'dags/pinhas_model/data/dataset_v3_train.json'
+VAL_FILE = 'dags/pinhas_model/data/dataset_v3_val.json'
+OUTPUT_DIR = "./dags/pinhas_model/models/modelo_treinado_v3"
 
 # Para comparar com BERTimbau, mude para: "neuralmind/bert-base-portuguese-cased"
 MODEL_NAME = "microsoft/mdeberta-v3-base" 

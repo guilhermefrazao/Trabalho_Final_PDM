@@ -236,6 +236,8 @@ def get_media_genero(genero: str) -> Optional[float]:
     """
     
     genero_search = f"%{genero.strip()}%"
+
+    print()
     
     job_config = bigquery.QueryJobConfig(
         query_parameters=[
