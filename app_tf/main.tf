@@ -168,6 +168,11 @@ resource "kubernetes_deployment" "model_ml_flow" {
     }
   }
 
+  timeouts {
+    create = "40m"
+    update = "40m"
+  }
+
   spec {
     replicas = 1
     selector {
