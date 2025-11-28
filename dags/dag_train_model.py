@@ -28,9 +28,6 @@ def treinar_modelo():
     import numpy as np
 
     logger = logging.getLogger("airflow.task")
-
-    credentials, project = google.auth.default()
-    print(f"------------ IDENTIDADE ATUAL: {credentials.service_account_email} ------------")
     
     logger.info("Iniciando a função de treinamento do modelo.")
 
@@ -110,8 +107,8 @@ with DAG(
                     k8s.V1Container(
                         name="base",
                         resources=k8s.V1ResourceRequirements(
-                            requests={"memory": "4Gi", "cpu": "2000m"},
-                            limits={"memory": "8Gi", "cpu": "4000m"} 
+                            requests={"memory": "512Mi", "cpu": "250m"},
+                            limits={"memory": "1Gi", "cpu": "500m"} 
                         )
                     )
                 ]
