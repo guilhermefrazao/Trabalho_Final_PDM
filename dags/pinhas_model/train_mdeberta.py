@@ -48,38 +48,8 @@ def load_file(filepath):
     except FileNotFoundError:
         raise FileNotFoundError(f"Arquivo '{filepath}' não encontrado. Rode o script de geração (generate_v4.py) primeiro.")
 
-print("Carregando datasets...")
-raw_train_data = load_file(TRAIN_FILE)
-raw_val_data = load_file(VAL_FILE)
 
-print(f"Exemplos de Treino: {len(raw_train_data)}")
-print(f"Exemplos de Validação: {len(raw_val_data)}")
 
-# --- CRIAÇÃO DOS MAPAS DE LABELS ---
-# Combinamos os dados apenas para extrair a lista completa de classes possíveis
-all_data = raw_train_data + raw_val_data
-
-unique_intents = sorted(list(set(d['intent'] for d in all_data)))
-unique_tags = set(['O'])
-for item in all_data:
-    for ent in item.get('entities', []):
-        unique_tags.add(f"B-{ent['entity']}")
-        unique_tags.add(f"I-{ent['entity']}")
-unique_tags = sorted(list(unique_tags))
-
-# Mapas ID <-> Texto
-intent2id = {k: v for v, k in enumerate(unique_intents)}
-id2intent = {v: k for k, v in intent2id.items()}
-tag2id = {k: v for v, k in enumerate(unique_tags)}
-id2tag = {v: k for k, v in tag2id.items()}
-
-print(f"\nResumo das Classes:")
-print(f"- Intenções ({len(intent2id)}): {intent2id}")
-print(f"- Tags NER ({len(tag2id)}): {tag2id}")
-
-# ==============================================================================
-# 3. PROCESSAMENTO E DATASET
-# ==============================================================================
 
 def process_data(raw_list, tokenizer, intent2id, tag2id):
     processed = []
@@ -115,10 +85,6 @@ def process_data(raw_list, tokenizer, intent2id, tag2id):
         })
     return processed
 
-# Processamento
-print("Processando dados...")
-train_processed = process_data(raw_train_data, tokenizer, intent2id, tag2id)
-val_processed = process_data(raw_val_data, tokenizer, intent2id, tag2id)
 
 class JointDataset(Dataset):
     def __init__(self, data):
@@ -157,9 +123,6 @@ def collate_fn(batch):
     return {'input_ids': input_ids_pad, 'attention_mask': mask_pad, 
             'intent_labels': intent_labels, 'entity_labels': entity_pad}
 
-# Loaders
-train_loader = DataLoader(JointDataset(train_processed), batch_size=16, shuffle=True, collate_fn=collate_fn)
-val_loader = DataLoader(JointDataset(val_processed), batch_size=32, collate_fn=collate_fn)
 
 # ==============================================================================
 # 4. ARQUITETURA DO MODELO (JOINT LEARNING)
@@ -197,9 +160,7 @@ class JointTransformer(nn.Module):
             
         return {'loss': loss, 'intent_logits': intent_logits, 'entity_logits': entity_logits}
 
-model = JointTransformer(MODEL_NAME, len(intent2id), len(tag2id)).to(device)
 
-# ==============================================================================
 # 5. TREINAMENTO
 # ==============================================================================
 def train_and_evaluate(model, train_loader, val_loader, epochs=5):
@@ -273,9 +234,6 @@ def train_and_evaluate(model, train_loader, val_loader, epochs=5):
 
     return acc, f1_int, f1_ner
 
-# Executa Treino
-train_and_evaluate(model, train_loader, val_loader, epochs=5)
-
 # ==============================================================================
 # 6. SALVAMENTO COMPLETO
 # ==============================================================================
@@ -305,8 +263,6 @@ def save_model_complete(model, tokenizer, output_dir, intent2id, tag2id, model_n
         
     print("✅ Modelo e configurações salvos com sucesso!")
 
-# Salva
-save_model_complete(model, tokenizer, OUTPUT_DIR, intent2id, tag2id, MODEL_NAME)
 
 # ==============================================================================
 # 7. TESTE RÁPIDO (Playground)
