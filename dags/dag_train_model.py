@@ -109,8 +109,8 @@ with DAG(
                     k8s.V1Container(
                         name="base",
                         resources=k8s.V1ResourceRequirements(
-                            requests={"memory": "512Mi", "cpu": "500m"}, # Muito pouco para Treino de IA
-                            limits={"memory": "1Gi", "cpu": "1000m"}
+                            requests={"memory": "4Gi", "cpu": "2000m"},
+                            limits={"memory": "8Gi", "cpu": "4000m"} 
                         )
                     )
                 ]
