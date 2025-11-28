@@ -1,17 +1,17 @@
-# Dockerfile para servir o frazo_front via Nginx na porta 4000
-
 FROM nginx:alpine
 
 # Remove config default
 RUN rm /etc/nginx/conf.d/default.conf
 
-# Copia o index.html para a pasta padrão do nginx
+# Copia os arquivos
 COPY index.html /usr/share/nginx/html/index.html
-
-# Copia a config customizada
 COPY nginx.conf /etc/nginx/conf.d/default.conf
 
-# Porta interna do container
+# --- NOVIDADE AQUI ---
+COPY entrypoint.sh /entrypoint.sh
+RUN chmod +x /entrypoint.sh
+
 EXPOSE 4000
 
-CMD ["nginx", "-g", "daemon off;"]
+# Define o script como ponto de entrada
+ENTRYPOINT ["/entrypoint.sh"]

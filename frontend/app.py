@@ -6,6 +6,7 @@ import random
 import pytz
 import time
 import os
+import mlflow.artifacts
 import pandas as pd
 from google.cloud import bigquery
 from google.oauth2 import service_account  # << NOVO
@@ -61,6 +62,7 @@ ml_objects = {}
 # frontend/app.py -> parent = frontend, parent.parent = raiz do projeto
 BASE_DIR = Path(__file__).resolve().parent.parent
 MODEL_LOCAL_DIR = BASE_DIR / "dags" / "pinhas_model" / "models" / "modelo_treinado_v3"
+MODEL_STAGE = "Production"
 
 # --- CREDENCIAL FIXA DO BIGQUERY (SERVICE ACCOUNT) ---
 # ATENÇÃO:
@@ -294,10 +296,23 @@ async def lifespan(app: FastAPI):
 
     # 2. Carregamento do Modelo LOCAL (sem MLflow)
     try:
-        model = LocalJointNLU(MODEL_LOCAL_DIR)
-        # Mantém a chave 'linear_model' para não quebrar o restante do código
+        print(f"📥 Baixando modelo '{MODEL_NAME}' (Stage: {MODEL_STAGE}) do GCS...")
+        
+        # Constrói a URI do MLflow Model Registry
+        model_uri = f"models:/{MODEL_NAME}/{MODEL_STAGE}"
+        
+        # A MÁGICA: O MLflow vai no GCS, autentica via Workload Identity, 
+        # baixa a pasta inteira para /tmp/xyz/ e retorna o caminho local.
+        local_model_path = mlflow.artifacts.download_artifacts(artifact_uri=model_uri)
+        
+        print(f"📂 Modelo baixado em: {local_model_path}")
+        
+        # Agora passamos o caminho local para sua classe customizada,
+        # exatamente como se fosse uma pasta local no seu computador.
+        model = LocalJointNLU(local_model_path)
+        
         ml_models["linear_model"] = model
-        print("Modelo NLU local carregado com sucesso!")
+        print("✅ Modelo NLU carregado com sucesso!")
     except Exception as e:
         print(f"Erro CRÍTICO ao carregar modelo NLU local: {e}")
 
