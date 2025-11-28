@@ -303,7 +303,7 @@ async def lifespan(app: FastAPI):
         
         # A MÁGICA: O MLflow vai no GCS, autentica via Workload Identity, 
         # baixa a pasta inteira para /tmp/xyz/ e retorna o caminho local.
-        local_model_path = mlflow.artifacts.download_artifacts(artifact_uri=model_uri)
+        local_model_path = mlflow.artifacts.download_artifacts(artifact_uri="gs://pdm-2025-creditos-mlflow-artifacts/mlruns/1/00a3e4f6e13e4c2d887e52bd810c5bcd/artifacts/model")
         
         print(f"📂 Modelo baixado em: {local_model_path}")
         
@@ -311,7 +311,7 @@ async def lifespan(app: FastAPI):
         # exatamente como se fosse uma pasta local no seu computador.
         model = LocalJointNLU(local_model_path)
         
-        ml_models["linear_model"] = model
+        ml_models["model"] = model
         print("✅ Modelo NLU carregado com sucesso!")
     except Exception as e:
         print(f"Erro CRÍTICO ao carregar modelo NLU local: {e}")
@@ -399,7 +399,7 @@ def predict_question(question: str = Body(..., embed=False)):
     para prever intenção e entidades a partir de uma pergunta em texto livre
     e em seguida chama o dialog_manager para integrar com o BigQuery.
     """
-    model = ml_models.get("linear_model")
+    model = ml_models.get("model")
     if not model:
         raise HTTPException(status_code=500, detail="Modelo de predição não carregado.")
 
