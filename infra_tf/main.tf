@@ -145,7 +145,7 @@ resource "google_container_node_pool" "primary_nodes" {
   node_config {
     spot = true 
 
-    machine_type = "e2-standard-4"
+    machine_type = "e2-highmem-4"
 
 
     disk_type    = "pd-balanced" 

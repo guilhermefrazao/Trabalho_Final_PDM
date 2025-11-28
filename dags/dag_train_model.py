@@ -31,9 +31,6 @@ def treinar_modelo():
     try:
         model, tokenizer, acc, f1_int, f1_ner = run_training_pipeline(epochs=1)
 
-        model.save_pretrained(OUTPUT_DIR)
-        tokenizer.save_pretrained(OUTPUT_DIR)
-
         mlflow.set_tracking_uri(MLFLOW_URI)
         mlflow.set_experiment("train_model")
 
@@ -107,8 +104,6 @@ with DAG(
                     k8s.V1Container(
                         name="base",
                         resources=k8s.V1ResourceRequirements(
-                            # Requests: O mínimo garantido para iniciar
-                            # Limits: O máximo que pode usar antes de tomar OOMKilled
                             requests={"memory": "4Gi", "cpu": "2000m"},
                             limits={"memory": "8Gi", "cpu": "4000m"} 
                         )
