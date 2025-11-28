@@ -35,7 +35,14 @@ resource "helm_release" "airflow" {
 
   values = [
     <<EOF
-defaultAirflowTag: "2.10.3"
+
+defaultAirflowRepository: "us-central1-docker.pkg.dev/${var.project}/${data.terraform_remote_state.infra.outputs.repo_name}/airflow:${var.image_tag_fastapi}"
+defaultAirflowTag: "2.10.3" # Ou coloque a tag fixa ex: "v1"
+
+# Política de pull (Always garante que ele pegue a versão nova se a tag for a mesma)
+images:
+  airflow:
+    pullPolicy: Always
 
 executor: KubernetesExecutor
 
@@ -70,9 +77,6 @@ webserver:
 env:
   - name: "AIRFLOW__API__AUTH_BACKENDS"
     value: "airflow.api.auth.backend.basic_auth"
-  - name: "_PIP_ADDITIONAL_REQUIREMENTS"
-    value: "mlflow google-cloud-storage fastapi uvicorn[standard] requests pytz mlflow pandas torch transformers datasets accelerate seqeval sentencepiece scikit-learn tqdm protobuf numpy"
-
 EOF
   ]
 }

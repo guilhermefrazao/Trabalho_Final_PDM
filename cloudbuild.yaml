@@ -13,5 +13,11 @@ steps:
   - name: 'gcr.io/cloud-builders/docker'
     args: ['push', '$_REGION-docker.pkg.dev/$PROJECT_ID/$_REPO_NAME/ml-flow:$COMMIT_SHA']
 
+  - name: 'gcr.io/cloud-builders/docker'  
+    args: ['build', '-t', '$_REGION-docker.pkg.dev/$PROJECT_ID/$_REPO_NAME/airflow:$COMMIT_SHA', '.']
+
+  - name: 'gcr.io/cloud-builders/docker'
+    args: ['push', '$_REGION-docker.pkg.dev/$PROJECT_ID/$_REPO_NAME/airflow:$COMMIT_SHA']
+
 options:
   logging: CLOUD_LOGGING_ONLY

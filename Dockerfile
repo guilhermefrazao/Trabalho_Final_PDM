@@ -1,22 +1,21 @@
-# Use a imagem base oficial do Airflow (ajuste a versão conforme seu cluster)
-FROM apache/airflow:2.7.1
+# 1. Imagem base
+FROM apache/airflow:2.10.3
 
-# Mude para o usuário root para instalar dependências de sistema (se necessário)
+# 2. Instalação de pacotes do SO (como root)
 USER root
-RUN apt-get update \
-  && apt-get install -y --no-install-recommends \
-         gcc \
-         g++ \
-  && apt-get autoremove -yqq --purge \
-  && apt-get clean \
-  && rm -rf /var/lib/apt/lists/*
+RUN apt-get update && \
+    apt-get install -y --no-install-recommends \
+    build-essential \
+    && apt-get clean \
+    && rm -rf /var/lib/apt/lists/*
 
-# Volte para o usuário airflow para instalar pacotes Python
+# 3. Volta para o usuário airflow
 USER airflow
 
-# Instale as bibliotecas que seu modelo precisa APENAS UMA VEZ aqui
-RUN pip install --no-cache-dir \
-    mlflow \
-    scikit-learn \
-    numpy \
-    pandas
+# 4. Copia o requirements.txt para a pasta atual (geralmente /opt/airflow)
+# É melhor copiar para "." do que para a raiz "/"
+COPY requirements.txt requirements.txt
+
+# 5. Instala as dependências Python
+# O --no-cache-dir é ótimo para manter a imagem leve
+RUN pip install --no-cache-dir -r requirements.txt

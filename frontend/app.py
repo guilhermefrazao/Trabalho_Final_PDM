@@ -94,7 +94,7 @@ async def lifespan(app: FastAPI):
     # 2. Carregamento do Modelo MLflow 
     try:
         mlflow.set_tracking_uri(MLFLOW_TRACKING_URI)
-        model = mlflow.pyfunc.load_model("models:/modelo_linear_teste/Production")
+        model = mlflow.pyfunc.load_model("models:/model_movies_intention/Production")
         ml_models["model"] = model
         print("Modelo carregado com sucesso!")
     except Exception as e:
