@@ -3,6 +3,7 @@ from airflow import DAG
 from airflow.operators.bash import BashOperator
 from airflow.operators.python import PythonOperator
 import logging 
+import tempfile
 import os
 from datetime import datetime
 
@@ -10,6 +11,7 @@ from kubernetes.client import models as k8s
 from pinhas_model.train_mdeberta import run_training_pipeline
 
 BASE_DIR = os.path.dirname(os.path.abspath(__file__))
+
 
 OUTPUT_DIR = "/tmp/modelo_treinado_v3"
 
@@ -29,10 +31,12 @@ def treinar_modelo():
     logger.info("Iniciando a função de treinamento do modelo.")
 
     try:
-        model, tokenizer, acc, f1_int, f1_ner = run_training_pipeline(epochs=1)
+        with tempfile.TemporaryDirectory() as tmp_dir:
 
-        mlflow.set_tracking_uri(MLFLOW_URI)
-        mlflow.set_experiment("train_model")
+            model, tokenizer, acc, f1_int, f1_ner = run_training_pipeline(epochs=1, output_path=tmp_dir)
+
+            mlflow.set_tracking_uri(MLFLOW_URI)
+            mlflow.set_experiment("train_model")
 
     except Exception as e:
         logger.error(f"Erro durante o treinamento do modelo: {e}")

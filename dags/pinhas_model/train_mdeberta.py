@@ -2,6 +2,7 @@ import json
 import time
 import os
 import sys
+import tempfile
 import torch
 from torch.utils.data import  Dataset, DataLoader
 from torch.optim import AdamW
@@ -61,7 +62,7 @@ def load_file(filepath):
     except FileNotFoundError:
         raise FileNotFoundError(f"Arquivo '{filepath}' não encontrado.")
 
-def run_training_pipeline(epochs=1):
+def run_training_pipeline(epochs=1, output_path="temp"):
     # ==========================================================================
     # IMPORTS TARDIOS (LAZY IMPORTS) - O Segredo para o Airflow não travar
     # ==========================================================================
@@ -82,7 +83,6 @@ def run_training_pipeline(epochs=1):
     BASE_DIR = os.path.dirname(os.path.abspath(__file__))
     TRAIN_FILE = os.path.join(BASE_DIR, 'data', 'dataset_v3_train.json')
     VAL_FILE = os.path.join(BASE_DIR, 'data', 'dataset_v3_val.json')
-    OUTPUT_DIR = "/tmp/modelo_treinado_v3"
     MODEL_NAME = "microsoft/mdeberta-v3-base"
 
     # ==========================================================================
@@ -213,7 +213,7 @@ def run_training_pipeline(epochs=1):
     acc, f1_int, f1_ner = train_and_evaluate(model, train_loader, val_loader, epochs)
 
     print("\n💾 Salvando artefatos...")
-    save_model_complete(model, tokenizer, OUTPUT_DIR, intent2id, tag2id)
+    save_model_complete(model, tokenizer, output_path, intent2id, tag2id)
 
     print("\n✅ PIPELINE FINALIZADO COM SUCESSO!")
     
