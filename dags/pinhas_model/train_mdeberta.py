@@ -264,43 +264,6 @@ def save_model_complete(model, tokenizer, output_dir, intent2id, tag2id, model_n
     print("✅ Modelo e configurações salvos com sucesso!")
 
 
-# ==============================================================================
-# 7. TESTE RÁPIDO (Playground)
-# ==============================================================================
-def predict_playground(text):
-    model.eval()
-    inputs = tokenizer(text, return_tensors="pt", truncation=True, max_length=128).to(device)
-    with torch.no_grad():
-        outputs = model(inputs['input_ids'], inputs['attention_mask'])
-    
-    intent = id2intent[torch.argmax(outputs['intent_logits']).item()]
-    entity_ids = torch.argmax(outputs['entity_logits'], dim=2)[0].cpu().numpy()
-    tokens = tokenizer.convert_ids_to_tokens(inputs['input_ids'][0])
-    
-    print(f"\nFrase: '{text}'")
-    print(f"Intenção: {intent}")
-    print("Entidades:", end=" ")
-    
-    current_ent = None
-    for token, idx in zip(tokens, entity_ids):
-        if token in tokenizer.all_special_tokens: continue
-        label = id2tag[idx]
-        token_clean = token.replace(' ', ' ').replace('##', '').strip()
-        
-        if label.startswith("B-"):
-            if current_ent: print(f"[{current_ent['tag']}: {current_ent['val']}]", end=" ")
-            current_ent = {'tag': label[2:], 'val': token_clean}
-        elif label.startswith("I-") and current_ent and label[2:] == current_ent['tag']:
-            current_ent['val'] += token_clean
-        else:
-            if current_ent: print(f"[{current_ent['tag']}: {current_ent['val']}]", end=" "); current_ent = None
-    if current_ent: print(f"[{current_ent['tag']}: {current_ent['val']}]", end=" ")
-    print()
-
-print("\n--- TESTE MANUAL ---")
-predict_playground("Qual o elenco de Matrix?")
-predict_playground("Quero ver filmes lançados em 2022")
-
 
 def run_training_pipeline(
     train_file=TRAIN_FILE,
