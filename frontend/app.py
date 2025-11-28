@@ -14,8 +14,8 @@ from typing import Dict, Any
 from pydantic import BaseModel
 from pathlib import Path
 import json
-from frontend.dialog_manager import dialog_manager
-from frontend.llm_responder import build_llm_answer
+from dialog_manager import dialog_manager
+from llm_responder import build_llm_answer
 from fastapi.middleware.cors import CORSMiddleware
 from fastapi import FastAPI, HTTPException, Body
 
@@ -23,7 +23,7 @@ from fastapi import FastAPI, HTTPException, Body
 import torch
 from transformers import AutoTokenizer
 
-from frontend.bigquery_queries import (
+from bigquery_queries import (
     set_bigquery_client,
     get_filmes_por_ano,
     get_duracao_filme,
