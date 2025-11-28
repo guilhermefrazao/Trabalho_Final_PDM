@@ -180,7 +180,7 @@ def run_training_pipeline(epochs=1, output_path="temp"):
     print("\n================ PIPELINE DE TREINO INICIADO ================")
     
     print(f"Carregando Tokenizer: {MODEL_NAME}...")
-    tokenizer = AutoTokenizer.from_pretrained(MODEL_NAME, use_fast=False)
+    tokenizer = AutoTokenizer.from_pretrained(MODEL_NAME)
 
     print("\n📂 Carregando datasets...")
     raw_train_data = load_file(TRAIN_FILE)
