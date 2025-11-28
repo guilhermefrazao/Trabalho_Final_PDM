@@ -16,6 +16,44 @@ from tqdm.auto import tqdm
 # NOTA: Não importamos torch, transformers ou sklearn aqui no topo!
 # Isso evita o Timeout do DagBag no Airflow.
 
+class JointDataset(Dataset):
+    def __init__(self, data):
+        self.data = data
+    
+    def __len__(self): return len(self.data)
+    
+    def __getitem__(self, idx):
+        item = self.data[idx]
+        return {
+            'input_ids': torch.tensor(item['input_ids'], dtype=torch.long),
+            'attention_mask': torch.tensor(item['attention_mask'], dtype=torch.long),
+            'intent_label': torch.tensor(item['intent_label'], dtype=torch.long),
+            'entity_labels': torch.tensor(item['labels'], dtype=torch.long)
+        }
+
+def collate_fn(batch):
+    # Padding Dinâmico
+    input_ids = [x['input_ids'] for x in batch]
+    attention_mask = [x['attention_mask'] for x in batch]
+    intent_labels = torch.stack([x['intent_label'] for x in batch])
+    entity_labels = [x['entity_labels'] for x in batch]
+    
+    max_len = max(len(x) for x in input_ids)
+    
+    input_ids_pad = torch.zeros(len(input_ids), max_len, dtype=torch.long)
+    mask_pad = torch.zeros(len(attention_mask), max_len, dtype=torch.long)
+    entity_pad = torch.ones(len(entity_labels), max_len, dtype=torch.long) * -100 # -100 ignora loss
+    
+    for i in range(len(input_ids)):
+        l = len(input_ids[i])
+        input_ids_pad[i, :l] = input_ids[i]
+        mask_pad[i, :l] = attention_mask[i]
+        entity_pad[i, :l] = entity_labels[i]
+        
+    return {'input_ids': input_ids_pad, 'attention_mask': mask_pad, 
+            'intent_labels': intent_labels, 'entity_labels': entity_pad}
+
+
 def load_file(filepath):
     try:
         with open(filepath, 'r', encoding='utf-8') as f:
@@ -33,7 +71,7 @@ def run_training_pipeline(epochs=1):
     # Adiciona o diretório atual ao path para garantir que ele ache o joint_model
     current_dir = os.path.dirname(os.path.abspath(__file__))
     sys.path.append(current_dir)
-    from joint_model import JointTransformer, JointDataset, collate_fn
+    from joint_model import JointTransformer
 
     # ==========================================================================
     # CONFIGURAÇÕES
