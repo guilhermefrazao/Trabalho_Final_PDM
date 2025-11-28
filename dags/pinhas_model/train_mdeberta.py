@@ -203,8 +203,8 @@ def run_training_pipeline(epochs=1):
     train_processed = process_data(raw_train_data, tokenizer, intent2id, tag2id)
     val_processed = process_data(raw_val_data, tokenizer, intent2id, tag2id)
 
-    train_loader = DataLoader(JointDataset(train_processed), batch_size=16, shuffle=True, collate_fn=collate_fn)
-    val_loader = DataLoader(JointDataset(val_processed), batch_size=32, collate_fn=collate_fn)
+    train_loader = DataLoader(JointDataset(train_processed), batch_size=8, shuffle=True, collate_fn=collate_fn)
+    val_loader = DataLoader(JointDataset(val_processed), batch_size=16, collate_fn=collate_fn)
 
     print("\n🤖 Inicializando modelo...")
     model = JointTransformer(MODEL_NAME, len(intent2id), len(tag2id)).to(device)
@@ -218,7 +218,7 @@ def run_training_pipeline(epochs=1):
     print("\n✅ PIPELINE FINALIZADO COM SUCESSO!")
     
     # Retorna o que você precisar para o MLflow
-    return model, acc, f1_int, f1_ner
+    return model, tokenizer, acc, f1_int, f1_ner
 
 if __name__ == "__main__":
     # Teste local apenas

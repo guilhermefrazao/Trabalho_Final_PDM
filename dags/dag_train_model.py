@@ -6,6 +6,7 @@ import logging
 import os
 from datetime import datetime
 
+from kubernetes.client import models as k8s
 from pinhas_model.train_mdeberta import run_training_pipeline
 
 BASE_DIR = os.path.dirname(os.path.abspath(__file__))
@@ -98,7 +99,24 @@ with DAG(
 
     treinamento = PythonOperator(
         task_id="execute_training_with_mlflow",
-        python_callable = treinar_modelo    
+        python_callable = treinar_modelo,
+        executor_config={
+        "pod_override": k8s.V1Pod(
+            spec=k8s.V1PodSpec(
+                containers=[
+                    k8s.V1Container(
+                        name="base",
+                        resources=k8s.V1ResourceRequirements(
+                            # Requests: O mínimo garantido para iniciar
+                            # Limits: O máximo que pode usar antes de tomar OOMKilled
+                            requests={"memory": "4Gi", "cpu": "2000m"},
+                            limits={"memory": "8Gi", "cpu": "4000m"} 
+                        )
+                    )
+                ]
+            )
+        )
+    }
     )
 
     tarefa_final = BashOperator(
