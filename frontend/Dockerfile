@@ -4,7 +4,7 @@ WORKDIR /app
 
 COPY . /app
 
-RUN pip install fastapi requests uvicorn pytz mlflow pandas transformers google-cloud-storage
+RUN pip install fastapi requests uvicorn pytz mlflow pandas transformers google-cloud-storage google-cloud-bigquery
 
 EXPOSE 8000
 

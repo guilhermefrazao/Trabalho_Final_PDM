@@ -27,7 +27,7 @@ provider "helm" {
 resource "kubernetes_service_account" "ml_app_sa" {
   metadata {
     name      = "ml-app-sa"
-    namespace = "default" 
+    namespace = "default"
     annotations = {
       "iam.gke.io/gcp-service-account" = data.terraform_remote_state.infra.outputs.service_account_email
     }
@@ -191,19 +191,19 @@ resource "kubernetes_deployment" "model_ml_flow" {
             container_port = 5000
           }
 
-        env {
-          name  = "AIRFLOW_HOST"
-          value = "airflow-webserver.airflow.svc.cluster.local:5000"
+          env {
+            name  = "AIRFLOW_HOST"
+            value = "airflow-webserver.airflow.svc.cluster.local:5000"
+          }
+          args = [
+            "mlflow", "server",
+            "--host", "0.0.0.0",
+            "--port", "5000",
+            "--backend-store-uri", "sqlite:///mlflow.db",
+            "--default-artifact-root", "gs://${data.terraform_remote_state.infra.outputs.bucket_name}/mlruns",
+            "--allowed-hosts", "*"
+          ]
         }
-        args = [
-          "mlflow", "server",
-          "--host", "0.0.0.0",
-          "--port", "5000",
-          "--backend-store-uri", "sqlite:///mlflow.db",
-          "--default-artifact-root", "gs://${data.terraform_remote_state.infra.outputs.bucket_name}/mlruns",
-          "--allowed-hosts", "*"
-        ]
-      }
       }
     }
   }
@@ -220,6 +220,68 @@ resource "kubernetes_service" "mlflow_service" {
     port {
       port        = 80
       target_port = 5000
+    }
+    type = "LoadBalancer"
+  }
+}
+
+
+
+
+resource "kubernetes_deployment" "frontend_app" {
+  metadata {
+    name = "frontend-app"
+    labels = {
+      app = "frontend"
+    }
+  }
+
+  spec {
+    replicas = 1
+    selector {
+      match_labels = {
+        app = "frontend"
+      }
+    }
+    template {
+      metadata {
+        labels = {
+          app = "frontend"
+        }
+      }
+      spec {
+        service_account_name = kubernetes_service_account.ml_app_sa.metadata[0].name
+
+        container {
+          image = "us-central1-docker.pkg.dev/${var.project}/${data.terraform_remote_state.infra.outputs.repo_name}/frontend:${var.image_tag_frontend_app}"
+          name  = "frontend"
+          port {
+            container_port = 4000
+          }
+
+          env {
+            name = "AIRFLOW_HOST"
+            # Pegamos dinamicamente o IP do LoadBalancer do serviço FastAPI
+            # Nota: O FastAPI precisa permitir CORS (*) para isso funcionar
+            value = "http://${kubernetes_service.fastapi_service.status.0.load_balancer.0.ingress.0.ip}"
+          }
+        }
+      }
+    }
+  }
+}
+
+resource "kubernetes_service" "frontend_app_service" {
+  metadata {
+    name = "frontend-service"
+  }
+  spec {
+    selector = {
+      app = "frontend"
+    }
+    port {
+      port        = 80
+      target_port = 4000
     }
     type = "LoadBalancer"
   }
