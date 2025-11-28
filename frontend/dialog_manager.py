@@ -2,7 +2,7 @@
 
 from typing import Any, Dict, List, Optional
 
-from frontend.bigquery_queries import (
+from bigquery_queries import (
     get_filmes_por_ano,
     get_duracao_filme,
     get_genero_filme,
