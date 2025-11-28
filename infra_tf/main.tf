@@ -124,6 +124,10 @@ resource "google_container_cluster" "primary" {
 
   remove_default_node_pool = true
   initial_node_count       = 1
+
+  workload_identity_config {
+    workload_pool = "${var.project}.svc.id.goog"
+  }
 }
 
 resource "google_container_node_pool" "primary_nodes" {
@@ -140,8 +144,37 @@ resource "google_container_node_pool" "primary_nodes" {
     oauth_scopes = [
       "https://www.googleapis.com/auth/cloud-platform"
     ]
+    workload_metadata_config {
+      mode = "GKE_METADATA"
+    }
   }
 }
+
+
+
+resource "google_service_account_iam_member" "workload_identity_airflow" {
+  service_account_id = google_service_account.Pdm-2025-creditos.name
+  role               = "roles/iam.workloadIdentityUser"
+  member             = "serviceAccount:${var.project}.svc.id.goog[airflow/airflow-sa]"
+
+
+  depends_on = [
+    google_container_cluster.primary,
+    google_container_node_pool.primary_nodes
+  ]
+}
+
+resource "google_service_account_iam_member" "workload_identity_mlflow" {
+  service_account_id = google_service_account.Pdm-2025-creditos.name
+  role               = "roles/iam.workloadIdentityUser"
+  member             = "serviceAccount:${var.project}.svc.id.goog[default/ml-app-sa]"
+
+  depends_on = [
+    google_container_cluster.primary,
+    google_container_node_pool.primary_nodes
+  ]
+}
+
 
 resource "null_resource" "configure_kubectl" {
 

@@ -22,7 +22,11 @@ def treinar_modelo():
     
     logger.info("Iniciando a função de treinamento do modelo.")
 
-    model, acc, f1_int, f1_ner = run_training_pipeline(epochs=1)
+    model, tokenizer, acc, f1_int, f1_ner = run_training_pipeline(epochs=1)
+
+    output_dir = "dags/pinhas_model/models/modelo_treinado_v3"
+    model.save_pretrained(output_dir)
+    tokenizer.save_pretrained(output_dir)
 
     mlflow.set_tracking_uri(MLFLOW_URI)
     mlflow.set_experiment("train_model")
@@ -30,6 +34,8 @@ def treinar_modelo():
     with mlflow.start_run() as run:
         run_id = run.info.run_id
         logger.info(f"Iniciando MLflow Run ID: {run_id}")
+
+        mlflow.log_artifacts(local_dir=output_dir, artifact_path="model")
 
         mlflow.log_metric("accuracy", acc)
         mlflow.log_metric("f1_intent", f1_int)
@@ -39,33 +45,11 @@ def treinar_modelo():
 
         logger.info("Modelo logado no MLflow.")
 
-        model_uri = f"runs:/{run_id}/modelo"
-        
+        model_uri = f"runs:/{run.info.run_id}/model"
+
+        mlflow.register_model(model_uri, "modelo_movies_bot")
+
         logger.info(f"Registrando modelo com URI: {model_uri}")
-
-        mlflow.sklearn.log_model(
-            sk_model=model,
-            artifact_path="model",
-            registered_model_name="model_movies_intention" # Nome fixo importante!
-        )
-
-        client = mlflow.tracking.MlflowClient()
-
-        
-        # Pega a versão mais recente que acabamos de criar
-        latest_version_info = client.get_latest_versions("model_movies_intention", stages=["None"])
-        
-        if latest_version_info:
-            version_number = latest_version_info[0].version
-            
-            logger.info(f"Transicionando versão {version_number} para Production...")
-            client.transition_model_version_stage(
-                name="model_movies_intention",
-                version=version_number,
-                stage="Production",
-                archive_existing_versions=True
-            )
-            logger.info("SUCESSO: Modelo promovido.")
 
 
 

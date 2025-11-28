@@ -29,3 +29,8 @@ output "bucket_name" {
   description = "Bucket to keep de model .pkl"
   value       = google_storage_bucket.mlflow_bucket.name
 }
+
+output "service_account_email" {
+  description = "Service Account Email"
+  value       = google_service_account.Pdm-2025-creditos.email
+}
