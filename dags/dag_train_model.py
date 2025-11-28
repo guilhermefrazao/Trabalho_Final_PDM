@@ -3,9 +3,14 @@ from airflow import DAG
 from airflow.operators.bash import BashOperator
 from airflow.operators.python import PythonOperator
 import logging 
+import os
 from datetime import datetime
 
 from pinhas_model.train_mdeberta import run_training_pipeline
+
+BASE_DIR = os.path.dirname(os.path.abspath(__file__))
+
+OUTPUT_DIR = os.path.join(BASE_DIR, 'pinhas_model', 'models', 'modelo_treinado_v3')
 
 
 MLFLOW_URI = "http://mlflow-service.default.svc.cluster.local"
@@ -24,9 +29,8 @@ def treinar_modelo():
 
     model, tokenizer, acc, f1_int, f1_ner = run_training_pipeline(epochs=1)
 
-    output_dir = "dags/pinhas_model/models/modelo_treinado_v3"
-    model.save_pretrained(output_dir)
-    tokenizer.save_pretrained(output_dir)
+    model.save_pretrained(OUTPUT_DIR)
+    tokenizer.save_pretrained(OUTPUT_DIR)
 
     mlflow.set_tracking_uri(MLFLOW_URI)
     mlflow.set_experiment("train_model")
@@ -35,7 +39,7 @@ def treinar_modelo():
         run_id = run.info.run_id
         logger.info(f"Iniciando MLflow Run ID: {run_id}")
 
-        mlflow.log_artifacts(local_dir=output_dir, artifact_path="model")
+        mlflow.log_artifacts(local_dir=OUTPUT_DIR, artifact_path="model")
 
         mlflow.log_metric("accuracy", acc)
         mlflow.log_metric("f1_intent", f1_int)
