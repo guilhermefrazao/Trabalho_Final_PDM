@@ -98,6 +98,17 @@ EOF
   ]
 }
 
+resource "kubernetes_secret" "gemini_secret" {
+  metadata {
+    name      = "gemini-api-secret"
+    namespace = "default" 
+  }
+
+  data = {
+    api_key = var.gemini_api_key
+  }
+}
+
 
 resource "kubernetes_deployment" "fastapi" {
   metadata {
@@ -128,6 +139,15 @@ resource "kubernetes_deployment" "fastapi" {
           name  = "fastapi"
           port {
             container_port = 80
+          } 
+          env {
+            name = "GOOGLE_API_KEY" 
+            value_from {
+              secret_key_ref {
+                name = "gemini-api-secret" 
+                key  = "api_key"        
+              }
+            }
           }
           env {
             name  = "AIRFLOW_HOST"

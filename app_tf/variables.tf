@@ -1,5 +1,7 @@
 variable "project" {}
 
+variable "gemini_api_key" {}
+
 variable "region" {
   default = "us-central1"
 }
@@ -37,3 +39,4 @@ variable "image_tag_frontend_app" {
   description = "A tag da imagem que foi feita o push recentemente"
   type        = string
 }
+
