@@ -27,33 +27,45 @@ def treinar_modelo():
     
     logger.info("Iniciando a função de treinamento do modelo.")
 
-    model, tokenizer, acc, f1_int, f1_ner = run_training_pipeline(epochs=1)
+    try:
+        model, tokenizer, acc, f1_int, f1_ner = run_training_pipeline(epochs=1)
 
-    model.save_pretrained(OUTPUT_DIR)
-    tokenizer.save_pretrained(OUTPUT_DIR)
+        model.save_pretrained(OUTPUT_DIR)
+        tokenizer.save_pretrained(OUTPUT_DIR)
 
-    mlflow.set_tracking_uri(MLFLOW_URI)
-    mlflow.set_experiment("train_model")
+        mlflow.set_tracking_uri(MLFLOW_URI)
+        mlflow.set_experiment("train_model")
 
-    with mlflow.start_run() as run:
-        run_id = run.info.run_id
-        logger.info(f"Iniciando MLflow Run ID: {run_id}")
+    except Exception as e:
+        logger.error(f"Erro durante o treinamento do modelo: {e}")
+        raise
 
-        mlflow.log_artifacts(local_dir=OUTPUT_DIR, artifact_path="model")
+    try:
+        logger.info("Iniciando o log do modelo no MLflow.")
+    
+        with mlflow.start_run() as run:
+            run_id = run.info.run_id
+            logger.info(f"Iniciando MLflow Run ID: {run_id}")
 
-        mlflow.log_metric("accuracy", acc)
-        mlflow.log_metric("f1_intent", f1_int)
-        mlflow.log_metric("f1_entity", f1_ner)
+            mlflow.log_artifacts(local_dir=OUTPUT_DIR, artifact_path="model")
 
-        logger.info(f"Métricas logadas: Acc={acc}, F1_Int={f1_int}")
+            mlflow.log_metric("accuracy", acc)
+            mlflow.log_metric("f1_intent", f1_int)
+            mlflow.log_metric("f1_entity", f1_ner)
 
-        logger.info("Modelo logado no MLflow.")
+            logger.info(f"Métricas logadas: Acc={acc}, F1_Int={f1_int}")
 
-        model_uri = f"runs:/{run.info.run_id}/model"
+            logger.info("Modelo logado no MLflow.")
 
-        mlflow.register_model(model_uri, "modelo_movies_bot")
+            model_uri = f"runs:/{run.info.run_id}/model"
 
-        logger.info(f"Registrando modelo com URI: {model_uri}")
+            mlflow.register_model(model_uri, "modelo_movies_bot")
+
+            logger.info(f"Registrando modelo com URI: {model_uri}")
+
+    except Exception as e:
+        logger.error(f"Erro durante o log do modelo no MLflow: {e}")
+        raise
 
 
 
