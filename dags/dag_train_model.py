@@ -6,6 +6,7 @@ import logging
 import tempfile
 import os
 from datetime import datetime
+import google.auth
 
 from kubernetes.client import models as k8s
 from pinhas_model.train_mdeberta import run_training_pipeline
@@ -27,6 +28,9 @@ def treinar_modelo():
     import numpy as np
 
     logger = logging.getLogger("airflow.task")
+
+    credentials, project = google.auth.default()
+    print(f"------------ IDENTIDADE ATUAL: {credentials.service_account_email} ------------")
     
     logger.info("Iniciando a função de treinamento do modelo.")
 
