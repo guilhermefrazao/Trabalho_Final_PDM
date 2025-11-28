@@ -75,3 +75,4 @@ TODO.md
 /pinhas_model/models
 /dags/pinhas_model/models
 app_tf/.terraform.tfstate.lock.info
+/infra

@@ -38,36 +38,33 @@ def treinar_modelo():
             mlflow.set_tracking_uri(MLFLOW_URI)
             mlflow.set_experiment("train_model")
 
+            logger.info("Iniciando o log do modelo no MLflow.")
+        
+            with mlflow.start_run() as run:
+                run_id = run.info.run_id
+                logger.info(f"Iniciando MLflow Run ID: {run_id}")
+
+                mlflow.log_artifacts(local_dir=tmp_dir, artifact_path="model")
+
+                mlflow.log_metric("accuracy", acc)
+                mlflow.log_metric("f1_intent", f1_int)
+                mlflow.log_metric("f1_entity", f1_ner)
+
+                logger.info(f"Métricas logadas: Acc={acc}, F1_Int={f1_int}")
+
+                logger.info("Modelo logado no MLflow.")
+
+                model_uri = f"runs:/{run.info.run_id}/model"
+
+                mlflow.register_model(model_uri, "modelo_movies_bot")
+
+                logger.info(f"Registrando modelo com URI: {model_uri}")
+
     except Exception as e:
         logger.error(f"Erro durante o treinamento do modelo: {e}")
         raise
 
-    try:
-        logger.info("Iniciando o log do modelo no MLflow.")
-    
-        with mlflow.start_run() as run:
-            run_id = run.info.run_id
-            logger.info(f"Iniciando MLflow Run ID: {run_id}")
 
-            mlflow.log_artifacts(local_dir=OUTPUT_DIR, artifact_path="model")
-
-            mlflow.log_metric("accuracy", acc)
-            mlflow.log_metric("f1_intent", f1_int)
-            mlflow.log_metric("f1_entity", f1_ner)
-
-            logger.info(f"Métricas logadas: Acc={acc}, F1_Int={f1_int}")
-
-            logger.info("Modelo logado no MLflow.")
-
-            model_uri = f"runs:/{run.info.run_id}/model"
-
-            mlflow.register_model(model_uri, "modelo_movies_bot")
-
-            logger.info(f"Registrando modelo com URI: {model_uri}")
-
-    except Exception as e:
-        logger.error(f"Erro durante o log do modelo no MLflow: {e}")
-        raise
 
 
 

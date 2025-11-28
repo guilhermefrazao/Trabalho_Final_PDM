@@ -23,10 +23,25 @@ provider "helm" {
   }
 }
 
+resource "google_storage_bucket_iam_member" "app_bucket_access" {
+  bucket = data.terraform_remote_state.infra.outputs.bucket_name
+  role   = "roles/storage.objectAdmin"
+  member = "serviceAccount:${data.terraform_remote_state.infra.outputs.service_account_email}"
+}
 
 resource "kubernetes_service_account" "ml_app_sa" {
   metadata {
     name      = "ml-app-sa"
+    namespace = "default"
+    annotations = {
+      "iam.gke.io/gcp-service-account" = data.terraform_remote_state.infra.outputs.service_account_email
+    }
+  }
+}
+
+resource "kubernetes_service_account" "airflow-sa" {
+  metadata {
+    name      = "airflow-sa"
     namespace = "default"
     annotations = {
       "iam.gke.io/gcp-service-account" = data.terraform_remote_state.infra.outputs.service_account_email
