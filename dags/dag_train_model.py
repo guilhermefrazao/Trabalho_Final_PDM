@@ -31,6 +31,15 @@ def treinar_modelo():
     
     logger.info("Iniciando a função de treinamento do modelo.")
 
+    print("--- Verificando Identidade ---")
+    credentials, project = google.auth.default()
+    
+    # Recarrega as credenciais para garantir que pegamos o email atual
+    if hasattr(credentials, "refresh"):
+        import google.auth.transport.requests
+        request = google.auth.transport.requests.Request()
+        credentials.refresh(request)
+
     try:
         with tempfile.TemporaryDirectory() as tmp_dir:
 
