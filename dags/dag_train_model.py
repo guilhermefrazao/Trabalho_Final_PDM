@@ -56,41 +56,6 @@ def treinar_modelo():
         logger.info(f"Registrando modelo com URI: {model_uri}")
 
 
-def upload_manual():
-    import mlflow
-
-    # 1. Configura para apontar para o túnel que abrimos no passo 1
-    mlflow.set_tracking_uri(MLFLOW_URI)
-    mlflow.set_experiment("model_upload")
-
-    LOCAL_MODEL_DIR = os.path.join(BASE_DIR, 'pinhas_model', 'models', 'modelo_treinado_v3')
-
-    # 3. Nome exato que o FastAPI está procurando
-    REGISTERED_NAME = "modelo_movies_bot"
-
-    print(f"Iniciando upload de '{LOCAL_MODEL_DIR}' para o MLflow...")
-
-    with mlflow.start_run() as run:
-        # A. Faz o upload dos arquivos físicos para o Bucket (via MLflow Server)
-        mlflow.log_artifacts(LOCAL_MODEL_DIR, artifact_path="model")
-        
-        # B. Cria o registro oficial (Model Registry)
-        model_uri = f"runs:/{run.info.run_id}/model"
-        result = mlflow.register_model(model_uri, REGISTERED_NAME)
-        
-        print(f"✅ Sucesso! Run ID: {run.info.run_id}")
-        print(f"📦 Modelo registrado: {REGISTERED_NAME} (Versão: {result.version})")
-
-    # 4. (Opcional) Promover para Production imediatamente
-    client = mlflow.MlflowClient()
-    client.transition_model_version_stage(
-        name=REGISTERED_NAME,
-        version=result.version,
-        stage="Production",
-        archive_existing_versions=True
-    )
-    print("🚀 Modelo promovido para Production!")
-
 
 default_args = {
     "owner": "airflow",                 # dono do DAG
@@ -121,7 +86,7 @@ with DAG(
 
     treinamento = PythonOperator(
         task_id="execute_training_with_mlflow",
-        python_callable = upload_manual     
+        python_callable = treinar_modelo     
     )
 
     tarefa_final = BashOperator(
