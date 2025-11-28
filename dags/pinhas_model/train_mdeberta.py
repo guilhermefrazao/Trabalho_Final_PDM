@@ -2,6 +2,16 @@ import json
 import time
 import os
 import sys
+import torch
+from torch.utils.data import DataLoader
+from torch.optim import AdamW
+from transformers import AutoTokenizer
+from sklearn.metrics import accuracy_score, f1_score
+from seqeval.metrics import f1_score as ner_f1_score
+from seqeval.metrics import classification_report as ner_classification_report
+from seqeval.scheme import IOB2
+from tqdm.auto import tqdm
+
 
 # NOTA: Não importamos torch, transformers ou sklearn aqui no topo!
 # Isso evita o Timeout do DagBag no Airflow.
@@ -13,20 +23,11 @@ def load_file(filepath):
     except FileNotFoundError:
         raise FileNotFoundError(f"Arquivo '{filepath}' não encontrado.")
 
-def run_training_pipeline(epochs=5):
+def run_training_pipeline(epochs=1):
     # ==========================================================================
     # IMPORTS TARDIOS (LAZY IMPORTS) - O Segredo para o Airflow não travar
     # ==========================================================================
-    print("⏳ Importando bibliotecas pesadas (Torch, Transformers)...")
-    import torch
-    from torch.utils.data import DataLoader
-    from torch.optim import AdamW
-    from transformers import AutoTokenizer
-    from sklearn.metrics import accuracy_score, f1_score
-    from seqeval.metrics import f1_score as ner_f1_score
-    from seqeval.metrics import classification_report as ner_classification_report
-    from seqeval.scheme import IOB2
-    from tqdm.auto import tqdm
+
     
     # Importa as classes do arquivo vizinho que criamos
     # Adiciona o diretório atual ao path para garantir que ele ache o joint_model
