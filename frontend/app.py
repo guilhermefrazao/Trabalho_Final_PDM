@@ -41,7 +41,7 @@ from bigquery_queries import (
 )
 
 # >>> IMPORTA APENAS A CLASSE DO MODELO (sem rodar o treino)
-from dags.pinhas_model.joint_model import JointTransformer
+from joint_model import JointTransformer
 
 
 # --- Variáveis de Ambiente e Configuração ---
