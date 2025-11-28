@@ -78,7 +78,7 @@ default_args = {
     "email": ["guilhermefrazao@discente.ufg.br"],   # para notificações
     "email_on_failure": False,          # desativa alertas de falha
     "email_on_retry": False,
-    "retries": 1,                       # número de tentativas em caso de erro
+    "retries": 0,                       # número de tentativas em caso de erro
     "retry_delay": timedelta(minutes=0.1) # intervalo entre tentativas
 }
 
