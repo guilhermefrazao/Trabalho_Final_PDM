@@ -98,8 +98,7 @@ with DAG(
 
     treinamento = PythonOperator(
         task_id="execute_training_with_mlflow",
-        python_callable = treinar_modelo    ,
-        execution_timeout=datetime.timedelta(minutes=5) 
+        python_callable = treinar_modelo    
     )
 
     tarefa_final = BashOperator(
