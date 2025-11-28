@@ -71,7 +71,7 @@ env:
   - name: "AIRFLOW__API__AUTH_BACKENDS"
     value: "airflow.api.auth.backend.basic_auth"
   - name: "_PIP_ADDITIONAL_REQUIREMENTS"
-    value: "mlflow google-cloud-storage scikit-learn numpy pandas"
+    value: "mlflow google-cloud-storage fastapi uvicorn[standard] requests pytz mlflow pandas torch transformers datasets accelerate seqeval sentencepiece scikit-learn tqdm protobuf numpy"
 
 EOF
   ]

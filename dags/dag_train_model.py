@@ -5,6 +5,8 @@ from airflow.operators.python import PythonOperator
 import logging 
 from datetime import datetime
 
+from pinhas_model.train_mdeberta import run_training_pipeline
+
 
 MLFLOW_URI = "http://mlflow-service.default.svc.cluster.local"
 
@@ -20,44 +22,51 @@ def treinar_modelo():
     
     logger.info("Iniciando a função de treinamento do modelo.")
 
+    model, acc, f1_int, f1_ner = run_training_pipeline(epochs=1)
+
     mlflow.set_tracking_uri(MLFLOW_URI)
     mlflow.set_experiment("train_model")
-    
-    logger.info("Preparando dados de treino...")
-    X = np.array([[1], [2], [3], [4]])
-    y = np.array([2, 4, 6, 8])
-
-    logger.info("Instanciando e treinando LinearRegression...")
-    model = LinearRegression()
-    model.fit(X, y)
-    logger.info("Treinamento concluído.")
-
-    signature = infer_signature(X, prediction=model.predict(X))
 
     with mlflow.start_run() as run:
         run_id = run.info.run_id
         logger.info(f"Iniciando MLflow Run ID: {run_id}")
 
-        mlflow.sklearn.log_model(model, artifact_path="modelo", signature=signature)
+        mlflow.log_metric("accuracy", acc)
+        mlflow.log_metric("f1_intent", f1_int)
+        mlflow.log_metric("f1_entity", f1_ner)
+
+        logger.info(f"Métricas logadas: Acc={acc}, F1_Int={f1_int}")
+
         logger.info("Modelo logado no MLflow.")
 
-        mlflow.log_metric("rmse", 0.0)
-        logger.info("Métricas logadas.")
-        
         model_uri = f"runs:/{run_id}/modelo"
         
         logger.info(f"Registrando modelo com URI: {model_uri}")
-        mv = mlflow.register_model(model_uri=model_uri, name="modelo_linear_teste")
-        
-        client = mlflow.tracking.MlflowClient()
-        logger.info(f"Transicionando versão {mv.version} para Production...")
-        
-        client.transition_model_version_stage(
-            name="modelo_linear_teste",
-            version=mv.version,
-            stage="Production"
+
+        mlflow.sklearn.log_model(
+            sk_model=model,
+            artifact_path="model",
+            registered_model_name="model_movies_intention" # Nome fixo importante!
         )
-        logger.info(f"SUCESSO: Modelo versão {mv.version} promovido para Production.")
+
+        client = mlflow.tracking.MlflowClient()
+
+        
+        # Pega a versão mais recente que acabamos de criar
+        latest_version_info = client.get_latest_versions("model_movies_intention", stages=["None"])
+        
+        if latest_version_info:
+            version_number = latest_version_info[0].version
+            
+            logger.info(f"Transicionando versão {version_number} para Production...")
+            client.transition_model_version_stage(
+                name="model_movies_intention",
+                version=version_number,
+                stage="Production",
+                archive_existing_versions=True
+            )
+            logger.info("SUCESSO: Modelo promovido.")
+
 
 
 default_args = {

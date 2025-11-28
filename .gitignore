@@ -62,3 +62,14 @@ htmlcov/
 
 # Tensorboard
 runs/
+/app_tf/.terraform
+app_tf/terraform.tfstate
+app_tf/terraform.tfstate.backup
+/config
+infra_tf/terraform.tfstate
+infra_tf/terraform.tfstate.backup
+/infra_tf/.terraform
+infra_tf/.terraform.lock.hcl
+.env
+TODO.md
+/pinhas_model/models

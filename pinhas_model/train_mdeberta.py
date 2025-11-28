@@ -267,6 +267,10 @@ def train_and_evaluate(model, train_loader, val_loader, epochs=5):
     print("\nDETALHES DE ENTIDADES:")
     print(ner_classification_report(ner_true, ner_preds, mode='strict', scheme=IOB2))
 
+    report = ner_classification_report(ner_true, ner_preds, mode='strict', scheme=IOB2)
+
+    return acc, f1_int, f1_ner
+
 # Executa Treino
 train_and_evaluate(model, train_loader, val_loader, epochs=5)
 
@@ -338,3 +342,77 @@ def predict_playground(text):
 print("\n--- TESTE MANUAL ---")
 predict_playground("Qual o elenco de Matrix?")
 predict_playground("Quero ver filmes lançados em 2022")
+
+
+def run_training_pipeline(
+    train_file=TRAIN_FILE,
+    val_file=VAL_FILE,
+    output_dir=OUTPUT_DIR,
+    model_name=MODEL_NAME,
+    epochs=5
+):
+    print("\n================ PIPELINE DE TREINO INICIADO ================")
+
+    # 1. Carregar dados
+    print("\n📂 Carregando datasets...")
+    raw_train_data = load_file(train_file)
+    raw_val_data = load_file(val_file)
+
+    print(f"Treino: {len(raw_train_data)} | Validação: {len(raw_val_data)}")
+
+    # 2. Criar mapas de labels
+    print("\n🧠 Criando mapas de classes...")
+    all_data = raw_train_data + raw_val_data
+
+    unique_intents = sorted(set(d['intent'] for d in all_data))
+    unique_tags = {'O'}
+    for item in all_data:
+        for ent in item.get('entities', []):
+            unique_tags.add(f"B-{ent['entity']}")
+            unique_tags.add(f"I-{ent['entity']}")
+    unique_tags = sorted(unique_tags)
+
+    intent2id = {k: v for v, k in enumerate(unique_intents)}
+    id2intent = {v: k for k, v in intent2id.items()}
+    tag2id = {k: v for v, k in enumerate(unique_tags)}
+    id2tag = {v: k for k, v in tag2id.items()}
+
+    print(f"Intents: {len(intent2id)} | Tags NER: {len(tag2id)}")
+
+    # 3. Processamento
+    print("\n⚙️ Processando dados...")
+    train_processed = process_data(raw_train_data, tokenizer, intent2id, tag2id)
+    val_processed = process_data(raw_val_data, tokenizer, intent2id, tag2id)
+
+    train_loader = DataLoader(
+        JointDataset(train_processed), batch_size=16, shuffle=True, collate_fn=collate_fn
+    )
+    val_loader = DataLoader(
+        JointDataset(val_processed), batch_size=32, collate_fn=collate_fn
+    )
+
+    # 4. Criar modelo
+    print("\n🤖 Inicializando modelo...")
+    model = JointTransformer(model_name, len(intent2id), len(tag2id)).to(device)
+
+    # 5. Treinar
+    print("\n🔥 Iniciando treinamento...")
+    acc, f1_int, f1_ner = train_and_evaluate(model, train_loader, val_loader, epochs=epochs)
+
+    # 6. Salvar resultado
+    print("\n💾 Salvando artefatos...")
+    save_model_complete(
+        model=model,
+        tokenizer=tokenizer,
+        output_dir=output_dir,
+        intent2id=intent2id,
+        tag2id=tag2id,
+        model_name=model_name
+    )
+
+    print("\n✅ PIPELINE FINALIZADO COM SUCESSO!")
+    return model, acc, f1_int, f1_ner
+
+
+if __name__ == "__main__":
+    model, tokenizer, intent2id, tag2id, id2intent, id2tag = run_training_pipeline(epochs=5)

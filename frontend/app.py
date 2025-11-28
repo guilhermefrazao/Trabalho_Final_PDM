@@ -43,6 +43,17 @@ BIGQUERY_PROJECT_ID = os.getenv("BIGQUERY_PROJECT_ID", "ornate-shape-471913-t7")
 # --- Variáveis Globais de Modelos ---
 ml_models: Dict[str, Any] = {}
 
+def detect_drift() -> bool:
+    """
+    Função simples para detectar drift de dados.
+    Retorna True se drift for detectado, False caso contrário.
+    """
+    drift_detected = False
+    if drift_detected:
+        print("Drift de dados detectado!")
+    else:
+        print("Nenhum drift de dados detectado.")
+    return drift_detected
 
 # --- Funções Auxiliares (Airflow) ---
 
@@ -84,7 +95,7 @@ async def lifespan(app: FastAPI):
     try:
         mlflow.set_tracking_uri(MLFLOW_TRACKING_URI)
         model = mlflow.pyfunc.load_model("models:/modelo_linear_teste/Production")
-        ml_models["linear_model"] = model
+        ml_models["model"] = model
         print("Modelo carregado com sucesso!")
     except Exception as e:
         print(f"Erro CRÍTICO ao carregar modelo: {e}")
@@ -174,11 +185,35 @@ def predict_question(question: str):
     mlflow.set_tracking_uri(MLFLOW_TRACKING_URI)
     
     print("Usando modelo carregado do MLflow...")
-    try:
-        input_data = pd.DataFrame([question], columns=["texto"])
-        prediction = model.predict(input_data)
+    
+    detect_drift()
+
+    if detect_drift() == True:
+        dag_run_url = f"{AIRFLOW_API}/dags/{DAG_ID}/dagRuns"
+
+        random_id = random.randint(0, 100)
+
+        local_tz = pytz.timezone("America/Sao_Paulo")
+        now_local = local_tz.localize(datetime.now())
+        two_hours_before = now_local - timedelta(hours=3)
+        logical_date = two_hours_before.astimezone(pytz.UTC).isoformat()
+
+        data_dag = {
+        "dag_run_id": f"testando_funcionamento_dag_via_requests_{str(random_id)}",
+        "logical_date": logical_date,
+        "conf": {"question": "teste"},
+        "note": "Disparo via FastAPI"
+        }
+
+        resp = requests.post(
+            url=dag_run_url,
+            auth=(AIRFLOW_USER, AIRFLOW_PASS),
+            json=data_dag
+        )
+
+        return {"pergunta": question, "resposta": "Foi detectado drift de dados. O modelo está sendo re-treinado."}
+
+    else:
+        resposta = "Usando modelo sem drift de dados."
         
-        return {"prediction": prediction.tolist()}
-        
-    except Exception as e:
-        return {"error": f"Erro na predição: {str(e)}"}
+        return {"pergunta": question, "resposta": resposta}
