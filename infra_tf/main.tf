@@ -131,21 +131,37 @@ resource "google_container_cluster" "primary" {
 }
 
 resource "google_container_node_pool" "primary_nodes" {
-  name       = "airflow-node"
+  name       = "airflow-node" 
   location   = google_container_cluster.primary.location
   cluster    = google_container_cluster.primary.name
-  node_count = 2
+  
+  initial_node_count = 1
+
+  autoscaling {
+    min_node_count = 1  # Mantém 1 sempre ligado (pra não demorar a iniciar)
+    max_node_count = 5  # Pode crescer até 5 máquinas se o deploy for pesado
+  }
 
   node_config {
+    spot = true 
+
     machine_type = "e2-standard-4"
-    disk_size_gb = 100
-    disk_type    = "pd-standard"
+
+
+    disk_type    = "pd-balanced" 
+    disk_size_gb = 50 # 50GB SSD é mais rápido que 100GB HDD para boot
 
     oauth_scopes = [
       "https://www.googleapis.com/auth/cloud-platform"
     ]
+
     workload_metadata_config {
       mode = "GKE_METADATA"
+    }
+
+    labels = {
+      "cloud.google.com/gke-spot" = "true"
+      "role"                      = "worker"
     }
   }
 }
