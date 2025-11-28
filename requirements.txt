@@ -17,3 +17,4 @@ numpy
 google-cloud-bigquery
 google-auth
 google-api-core
+google-genai
