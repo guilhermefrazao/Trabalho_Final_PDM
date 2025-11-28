@@ -52,6 +52,11 @@ AIRFLOW_PASS = os.getenv("AIRFLOW_PASS", "admin")
 
 BIGQUERY_PROJECT_ID = os.getenv("BIGQUERY_PROJECT_ID", "ornate-shape-471913-t7")
 
+MODEL_NAME = "modelo_movies_bot"
+STAGE = "Production"
+
+ml_objects = {}
+
 # Caminho do modelo treinado localmente
 # frontend/app.py -> parent = frontend, parent.parent = raiz do projeto
 BASE_DIR = Path(__file__).resolve().parent.parent

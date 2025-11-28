@@ -411,7 +411,7 @@ def run_training_pipeline(
     )
 
     print("\n✅ PIPELINE FINALIZADO COM SUCESSO!")
-    return model, acc, f1_int, f1_ner
+    return model, tokenizer, acc, f1_int, f1_ner
 
 
 if __name__ == "__main__":

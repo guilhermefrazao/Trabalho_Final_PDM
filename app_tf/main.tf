@@ -23,6 +23,17 @@ provider "helm" {
   }
 }
 
+
+resource "kubernetes_service_account" "ml_app_sa" {
+  metadata {
+    name      = "ml-app-sa"
+    namespace = "default" 
+    annotations = {
+      "iam.gke.io/gcp-service-account" = data.terraform_remote_state.infra.outputs.service_account_email
+    }
+  }
+}
+
 resource "helm_release" "airflow" {
   name             = "airflow"
   repository       = "https://airflow.apache.org"
@@ -30,14 +41,14 @@ resource "helm_release" "airflow" {
   namespace        = "airflow"
   create_namespace = true
   timeout          = 600
-  wait = false
+  wait             = false
   version          = "1.11.0"
 
   values = [
     <<EOF
 
-defaultAirflowRepository: "us-central1-docker.pkg.dev/${var.project}/${data.terraform_remote_state.infra.outputs.repo_name}/airflow:${var.image_tag_fastapi}"
-defaultAirflowTag: "2.10.3" # Ou coloque a tag fixa ex: "v1"
+defaultAirflowRepository: "us-central1-docker.pkg.dev/${var.project}/${data.terraform_remote_state.infra.outputs.repo_name}/airflow"
+defaultAirflowTag: "${var.image_tag_airflow}"
 
 # Política de pull (Always garante que ele pegue a versão nova se a tag for a mesma)
 images:
@@ -74,6 +85,12 @@ webserver:
           cpu: 2000m
           memory: 1024Mi
 
+serviceAccount:
+  create: true
+  name: "airflow-sa" # Tem que bater com o nome usado no Binding acima
+  annotations:
+    iam.gke.io/gcp-service-account: "${data.terraform_remote_state.infra.outputs.service_account_email}"
+
 env:
   - name: "AIRFLOW__API__AUTH_BACKENDS"
     value: "airflow.api.auth.backend.basic_auth"
@@ -104,6 +121,8 @@ resource "kubernetes_deployment" "fastapi" {
         }
       }
       spec {
+        service_account_name = kubernetes_service_account.ml_app_sa.metadata[0].name
+
         container {
           image = "us-central1-docker.pkg.dev/${var.project}/${data.terraform_remote_state.infra.outputs.repo_name}/fastapi-app:${var.image_tag_fastapi}"
           name  = "fastapi"
@@ -113,10 +132,6 @@ resource "kubernetes_deployment" "fastapi" {
           env {
             name  = "AIRFLOW_HOST"
             value = "airflow-webserver.airflow.svc.cluster.local:8000"
-          }
-          env {
-            name = "GOOGLE_APPLICATION_CREDENTIALS"
-            value = "/var/secrets/google/key.json" 
           }
           env {
             name  = "MLFLOW_TRACKING_URI"
@@ -146,15 +161,15 @@ resource "kubernetes_service" "fastapi_service" {
 }
 
 resource "kubernetes_deployment" "model_ml_flow" {
-    metadata {
-        name = "mlflow-app"
-        labels = {
-        app = "mlflow"
-        }
+  metadata {
+    name = "mlflow-app"
+    labels = {
+      app = "mlflow"
     }
+  }
 
   spec {
-    replicas = 2
+    replicas = 1
     selector {
       match_labels = {
         app = "mlflow"
@@ -167,30 +182,28 @@ resource "kubernetes_deployment" "model_ml_flow" {
         }
       }
       spec {
+        service_account_name = kubernetes_service_account.ml_app_sa.metadata[0].name
+
         container {
           image = "us-central1-docker.pkg.dev/${var.project}/${data.terraform_remote_state.infra.outputs.repo_name}/ml-flow:${var.image_tag_mlflow}"
           name  = "mlflow"
           port {
             container_port = 5000
           }
-          
-          env {
-            name  = "AIRFLOW_HOST"
-            value = "airflow-webserver.airflow.svc.cluster.local:5000"
-          }
-          args = [
-            "mlflow", "server",
-            "--host", "0.0.0.0",   
-            "--port", "5000",     
-            "--backend-store-uri", "sqlite:///mlflow.db",
-            "--default-artifact-root", "gs://${data.terraform_remote_state.infra.outputs.bucket_name}/mlruns",
-            "--allowed-hosts", "*" 
-          ]
-          env {
-            name  = "GOOGLE_APPLICATION_CREDENTIALS"
-            value = "/var/secrets/google/key.json" 
-          }
+
+        env {
+          name  = "AIRFLOW_HOST"
+          value = "airflow-webserver.airflow.svc.cluster.local:5000"
         }
+        args = [
+          "mlflow", "server",
+          "--host", "0.0.0.0",
+          "--port", "5000",
+          "--backend-store-uri", "sqlite:///mlflow.db",
+          "--default-artifact-root", "gs://${data.terraform_remote_state.infra.outputs.bucket_name}/mlruns",
+          "--allowed-hosts", "*"
+        ]
+      }
       }
     }
   }
